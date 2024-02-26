@@ -2,7 +2,6 @@ import "./App.css";
 import ThreeRoot from "./components/ThreeRoot";
 import ConfigPanel from "./components/ConfigPanel";
 import { useCallback, useRef, useState } from "react";
-import { STLExporter } from "three-stdlib";
 import { Mesh } from "three";
 import throttle from "lodash.throttle";
 import { saveAs } from "file-saver";
@@ -15,13 +14,13 @@ function App() {
         depth: 560,
         radius: 25,
         thickness: 5,
-        divideWidth: 0.6,
-        divideDepth: 0.4,
+        divideWidth: 0.55,
+        divideDepth: 0.45,
         outerGap: 5,
         innerGap: 5,
         bedSizeX: 220,
         bedSizeY: 220,
-        iterations: 2,
+        iterations: 1,
     };
 
     const [configValues, setConfigValues] = useState({
