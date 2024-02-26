@@ -1,5 +1,5 @@
 import { FontLoader, TextGeometry } from "three-stdlib";
-import spaceMonoFont from "../../fonts/SpaceMono.json";
+import spaceMonoFont from "../fonts/SpaceMono.json";
 import { Euler, Object3DNode, Vector3, extend } from "@react-three/fiber";
 import { FontData } from "@react-three/drei";
 
@@ -18,18 +18,18 @@ const Measurements = ({ width, height, depth }: ConfigValuesProps) => {
 
     const measurements = [
         {
-            value: `${depth * 10}mm`,
-            position: [-width / 2 - 6, -height / 2, 0],
+            value: `${depth}mm`,
+            position: [-width / 2 - 45, -height / 2, -20],
             rotation: [-Math.PI / 2, 0, -Math.PI / 2],
         },
         {
-            value: `${width * 10}mm`,
-            position: [0, -height / 2, depth / 2 + 6],
+            value: `${width}mm`,
+            position: [-20, -height / 2, depth / 2 + 55],
             rotation: [-Math.PI / 2, 0, 0],
         },
         {
-            value: `${height * 10}mm`,
-            position: [width / 2 + 3, -height / 2 + 4, depth / 2 + 6],
+            value: `${height}mm`,
+            position: [width / 2 + 30, -height / 2 + 32, depth / 2 + 55],
             rotation: [-Math.PI / 2, -Math.PI / 2, 0],
         },
     ].map((measurement) => {
@@ -41,7 +41,7 @@ const Measurements = ({ width, height, depth }: ConfigValuesProps) => {
                 <textGeometry
                     args={[
                         measurement.value,
-                        { font: font, size: 1.5, height: 0.05 },
+                        { font: font, size: 14, height: 0.05 },
                     ]}
                 />
             </mesh>
@@ -49,6 +49,6 @@ const Measurements = ({ width, height, depth }: ConfigValuesProps) => {
     });
 
     return measurements;
-}
+};
 
 export default Measurements;

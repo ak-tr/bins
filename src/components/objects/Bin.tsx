@@ -1,64 +1,64 @@
-import { Subtraction, Geometry, Base } from "@react-three/csg";
-import { BoxGeometry } from "three";
-import { RoundedBoxGeometry } from "three-stdlib";
+import { ForwardedRef, forwardRef } from "react";
+import { RoundedEdgedRectGeometry } from "../../utils/roundedEdgedRect";
+import { Mesh } from "three";
 
-type PositionProps = {
-    x: number;
-    y: number;
-    z: number;
-};
+// Unfortunately cannot use @react-three/csg here as when exporting meshes
+// that were evaluated by the @react-three/csg library, the subtractions were
+// not being taken into effect. Using three-bvh-csg which is what @react-three/csg
+// is based on seemed to do the trick for some odd reason.
+import { SUBTRACTION, Brush, Evaluator } from "three-bvh-csg";
 
-type BinProps = {
-    radius: number;
-};
+const Bin = forwardRef(
+    (
+        {
+            width,
+            depth,
+            height,
+            radius,
+            thickness,
+            bedSizeX,
+            bedSizeY,
+        }: BinValuesProps,
+        ref: ForwardedRef<Mesh>
+    ) => {
+        const roundedEdgedRect = RoundedEdgedRectGeometry(
+            width,
+            height,
+            depth,
+            radius
+        );
+        const roundedEdgedRectInner = RoundedEdgedRectGeometry(
+            width - thickness * 2,
+            height - thickness * 2,
+            depth - thickness * 2,
+            radius
+        );
 
-const Bin = ({
-    width,
-    height,
-    depth,
-    x,
-    y,
-    z,
-    radius,
-}: ConfigValuesProps & PositionProps & BinProps) => {
-    const roundedBoxGeometry = new RoundedBoxGeometry(
-        width,
-        height + radius * 2,
-        depth,
-        5,
-        radius
-    );
-    const roundedBoxGeometryInner = new RoundedBoxGeometry(
-        width - 2,
-        height,
-        depth - 2,
-        5,
-        radius
-    );
+        const canFitOnPrinterBed = width < bedSizeX && depth < bedSizeY;
+        const color = canFitOnPrinterBed ? "lightblue" : "salmon";
 
-    const boxGeometry = new BoxGeometry(width, height, depth);
-    const boxGeometryInner = new BoxGeometry(width - 2, height - 1, depth - 2);
+        const roundedEdgedRectBrush = new Brush(roundedEdgedRect);
+        roundedEdgedRectBrush.updateMatrixWorld();
 
-    const binBase = (
-        <mesh position={[x, y, z]}>
-            <meshStandardMaterial color="teal" />
-            <Geometry>
-                {/* Create box */}
-                <Base geometry={radius === 0 ? boxGeometry : roundedBoxGeometry} />
-                {/* Subtract inside, conditionally use boxGeometry vs roundedBoxGeometry as it was causing visual issues */}
-                <Subtraction
-                    geometry={radius === 0 ? boxGeometryInner : roundedBoxGeometryInner}
-                    position={[0, radius > 0 ? (1.5 - radius) + radius : 1, 0]}
-                />
-                {/* Remove top */}
-                <Subtraction position={[0, height, 0]}>
-                    <boxGeometry args={[width, height, depth]} />
-                </Subtraction>
-            </Geometry>
-        </mesh>
-    );
+        const roundedEdgedRectInnerBrush = new Brush(roundedEdgedRectInner);
+        roundedEdgedRectInnerBrush.position.y = thickness * 2;
+        roundedEdgedRectInnerBrush.updateMatrixWorld();
 
-    return binBase;
-};
+        const evaluator = new Evaluator();
+        const result = evaluator.evaluate(
+            roundedEdgedRectBrush,
+            roundedEdgedRectInnerBrush,
+            SUBTRACTION
+        );
+
+        return (
+            <group position={[width / 2, 0, depth / 2]}>
+                <mesh ref={ref} geometry={result.geometry}>
+                    <meshStandardMaterial color={color} />
+                </mesh>
+            </group>
+        );
+    }
+);
 
 export default Bin;

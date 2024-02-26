@@ -7,9 +7,9 @@ const Drawer = ({ width, height, depth }: ConfigValuesProps) => {
             <meshStandardMaterial color="lightgrey" />
             <Geometry>
                 <Base>
-                    <boxGeometry args={[width + 2, height + 1, depth + 2]} />
+                    <boxGeometry args={[width + 20, height + 10, depth + 20]} />
                 </Base>
-                <Subtraction position={[0, 1, 0]}>
+                <Subtraction position={[0, 5, 0]}>
                     <boxGeometry args={[width, height, depth]} />
                 </Subtraction>
             </Geometry>
@@ -17,7 +17,7 @@ const Drawer = ({ width, height, depth }: ConfigValuesProps) => {
     );
 
     const drawerEnd = (
-        <Box args={[width + 5, height + 3, 2]} position={[0, 0.5, depth / 2 + 1]}>
+        <Box args={[width + 50, height + 30, 20]} position={[0, 5, depth / 2 + 10]}>
             <meshStandardMaterial color="lightgrey" />
         </Box>
     );
