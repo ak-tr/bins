@@ -29,7 +29,7 @@ const Bin = forwardRef(
         );
         const roundedEdgedRectInner = RoundedEdgedRectGeometry(
             width - thickness * 2,
-            height - thickness * 2,
+            height - 5,
             depth - thickness * 2,
             radius
         );
@@ -41,7 +41,7 @@ const Bin = forwardRef(
         roundedEdgedRectBrush.updateMatrixWorld();
 
         const roundedEdgedRectInnerBrush = new Brush(roundedEdgedRectInner);
-        roundedEdgedRectInnerBrush.position.y = thickness * 2;
+        roundedEdgedRectInnerBrush.position.y = 5;
         roundedEdgedRectInnerBrush.updateMatrixWorld();
 
         const evaluator = new Evaluator();
