@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-import { DEFAULT_VALUES } from "consts";
+import { DEFAULT_VALUES } from "constants";
 
 const { width, depth, height } = DEFAULT_VALUES;
 const defaultValue = { width, depth, height };

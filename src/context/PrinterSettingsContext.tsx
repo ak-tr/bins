@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-import { DEFAULT_VALUES } from "consts";
+import { DEFAULT_VALUES } from "constants";
 
 const { bedSizeX, bedSizeY } = DEFAULT_VALUES;
 const defaultValue = { bedSizeX, bedSizeY };

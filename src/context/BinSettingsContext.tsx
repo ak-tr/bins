@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-import { DEFAULT_VALUES } from "consts";
+import { DEFAULT_VALUES } from "constants";
 
 const { radius, thickness, divideWidth, divideDepth, outerGap, innerGap, iterations } = DEFAULT_VALUES;
 const defaultValue = { radius, thickness, divideWidth, divideDepth, outerGap, innerGap, iterations };
