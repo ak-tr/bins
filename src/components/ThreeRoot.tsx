@@ -89,17 +89,14 @@ const ThreeRoot = ({ updateBinMeshArray, ...props }: Props) => {
 
     return (
         <Canvas shadows>
-            <PerspectiveCamera makeDefault position={[0, -2, distance]} />
+            <PerspectiveCamera makeDefault position={[0, -30, distance]} />
             <ambientLight intensity={1} />
             <spotLight
-                position={[0, 700, distance]}
-                angle={0.5}
-                penumbra={0.3}
-                decay={1.4}
-                intensity={10000}
+                position={[0, 400, 100]}
+                intensity={50000}
             />
             <rectAreaLight
-                intensity={1000}
+                intensity={10000}
                 position={[5, 200, distance]}
                 color="white"
             />
