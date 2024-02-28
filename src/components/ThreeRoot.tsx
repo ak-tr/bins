@@ -82,7 +82,10 @@ const ThreeRoot = ({ updateBinMeshArray, ...props }: Props) => {
         setDistance(1000 + 1000 * normalise(objectVolume, 459000000, 687500));
     }, [objectVolume]);
 
-    const objects = [...Drawer(props), ...Measurements(props), allBins];
+    const drawer = useMemo(() => Drawer(props), [width, height, depth])
+    const measurements = useMemo(() => Measurements(props), [width, height, depth]);
+
+    const objects = [...drawer, ...measurements, allBins];
 
     return (
         <Canvas shadows>

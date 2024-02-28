@@ -1,6 +1,6 @@
-import { ForwardedRef, forwardRef } from "react";
+import { ForwardedRef, forwardRef, useMemo } from "react";
 import { RoundedEdgedRectGeometry } from "../../utils/roundedEdgedRect";
-import { Mesh } from "three";
+import { Mesh, MeshStandardMaterial } from "three";
 
 // Unfortunately cannot use @react-three/csg here as when exporting meshes
 // that were evaluated by the @react-three/csg library, the subtractions were
@@ -37,6 +37,8 @@ const Bin = forwardRef(
         const canFitOnPrinterBed = width < bedSizeX && depth < bedSizeY;
         const color = canFitOnPrinterBed ? "lightblue" : "salmon";
 
+        const material = useMemo(() => new MeshStandardMaterial({ color }), [color]);
+
         const roundedEdgedRectBrush = new Brush(roundedEdgedRect);
         roundedEdgedRectBrush.updateMatrixWorld();
 
@@ -53,8 +55,7 @@ const Bin = forwardRef(
 
         return (
             <group position={[width / 2, 0, depth / 2]}>
-                <mesh ref={ref} geometry={result.geometry}>
-                    <meshStandardMaterial color={color} />
+                <mesh ref={ref} geometry={result.geometry} material={material} receiveShadow>
                 </mesh>
             </group>
         );

@@ -55,8 +55,6 @@ function App() {
         setIsExporting(false);
     };
 
-    console.log(binMeshArray);
-
     return (
         <div className="bg-neutral-900 text-white grid grid-cols-[minmax(800px,_1fr)_400px] h-lvh">
             {/* Canvas for Three.js */}
