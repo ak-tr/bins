@@ -12,25 +12,40 @@ import { Bin } from "@components/Objects/Bin";
 
 // React imports
 import { createRef, useEffect, useMemo, useRef, useState } from "react";
+import { useDrawerContext } from "context/DrawerSettingsContext";
+import { useBinContext } from "context/BinSettingsContext";
+import { usePrinterContext } from "context/PrinterSettingsContext";
 
-type Props = ConfigValuesProps & {
+type Props = {
     updateBinMeshArray: (refs: any[]) => void;
 };
 
-const ThreeApp = ({ updateBinMeshArray, ...props }: Props) => {
+const ThreeApp = ({ updateBinMeshArray }: Props) => {
+    const { width, height, depth } = useDrawerContext() as DrawerContext;
+    const {
+        radius,
+        thickness,
+        divideWidth,
+        divideDepth,
+        outerGap,
+        innerGap,
+        iterations,
+    } = useBinContext() as BinContext;
+    const { bedSizeX, bedSizeY } = usePrinterContext() as PrinterContext;
+
     const binRefs = useRef([]);
 
     const groupedBins = useMemo(() => {
         const bins = generateBins(
-            props.width - props.outerGap,
-            props.depth - props.outerGap,
-            props.height,
-            props.divideWidth,
-            props.divideDepth,
-            props.iterations,
-            props.radius,
-            props.thickness,
-            props.innerGap
+            width - outerGap,
+            depth - outerGap,
+            height,
+            divideWidth,
+            divideDepth,
+            iterations,
+            radius,
+            thickness,
+            innerGap
         );
 
         binRefs.current = bins.map(
@@ -48,29 +63,37 @@ const ThreeApp = ({ updateBinMeshArray, ...props }: Props) => {
                         depth={bin.depth}
                         radius={bin.radius}
                         thickness={bin.thickness}
-                        bedSizeX={props.bedSizeX}
-                        bedSizeY={props.bedSizeY}
+                        bedSizeX={bedSizeX}
+                        bedSizeY={bedSizeY}
                     />
                 </group>
             );
         });
 
         return binObjects;
-    }, [props]);
+    }, [
+        width,
+        height,
+        depth,
+        radius,
+        thickness,
+        divideWidth,
+        divideDepth,
+        outerGap,
+        innerGap,
+        iterations,
+        bedSizeX,
+        bedSizeY,
+    ]);
 
     const allBins = (
         <group
-            position={[
-                -props.width / 2 + props.outerGap / 2,
-                0,
-                -props.depth / 2 + props.outerGap / 2,
-            ]}
+            position={[-width / 2 + outerGap / 2, 0, -depth / 2 + outerGap / 2]}
         >
             {...groupedBins}
         </group>
     );
 
-    const { width, height, depth } = props;
     const objectVolume = width * height * depth;
 
     updateBinMeshArray(binRefs.current);
@@ -84,9 +107,12 @@ const ThreeApp = ({ updateBinMeshArray, ...props }: Props) => {
         setDistance(1000 + 1000 * normalise(objectVolume, 459000000, 687500));
     }, [objectVolume]);
 
-    const drawer = useMemo(() => Drawer(props), [width, height, depth]);
+    const drawer = useMemo(
+        () => Drawer({ width, height, depth }),
+        [width, height, depth]
+    );
     const measurements = useMemo(
-        () => Measurements(props),
+        () => Measurements({ width, height, depth }),
         [width, height, depth]
     );
 

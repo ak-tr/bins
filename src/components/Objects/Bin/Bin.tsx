@@ -18,7 +18,7 @@ const Bin = forwardRef(
             thickness,
             bedSizeX,
             bedSizeY,
-        }: BinValuesProps,
+        }: BinValues,
         ref: ForwardedRef<Mesh>
     ) => {
         const roundedEdgedRect = RoundedEdgedRectGeometry(

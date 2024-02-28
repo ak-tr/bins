@@ -1,29 +1,20 @@
 import { Slider, SliderValue, Link, Button, Input } from "@nextui-org/react";
+import { useBinContext } from "context/BinSettingsContext";
+import { useDrawerContext } from "context/DrawerSettingsContext";
+import { usePrinterContext } from "context/PrinterSettingsContext";
 
-type Props = ConfigValuesProps & ExtraProps & {
-    onConfigValueChange: (property: string, value: number) => void;
-    setDefault: () => void;
+type Props = ExtraProps & {
     exportBins: () => void;
 };
 
 const ConfigPanel = ({
-    width,
-    height,
-    depth,
-    radius,
-    thickness,
-    divideWidth,
-    divideDepth,
-    outerGap,
-    innerGap,
-    iterations,
-    bedSizeX,
-    bedSizeY,
     isExporting,
-    onConfigValueChange,
-    setDefault,
     exportBins,
 }: Props) => {
+    const { width, height, depth, updateBoxSettings } = useDrawerContext() as DrawerContext;
+    const { radius, thickness, divideWidth, divideDepth, outerGap, innerGap, iterations, updateBinSettings } = useBinContext() as BinContext;
+    const { bedSizeX, bedSizeY, updatePrinterSettings } = usePrinterContext() as PrinterContext;
+
     const size = "lg";
 
     const sliders = [
@@ -34,6 +25,7 @@ const ConfigPanel = ({
             minValue: 150,
             showCm: true,
             rawValue: false,
+            updateFunc: updateBoxSettings,
         },
         {
             label: "Height",
@@ -42,6 +34,7 @@ const ConfigPanel = ({
             minValue: 75,
             showCm: true,
             rawValue: false,
+            updateFunc: updateBoxSettings,
         },
         {
             label: "Depth",
@@ -50,6 +43,7 @@ const ConfigPanel = ({
             minValue: 150,
             showCm: true,
             rawValue: false,
+            updateFunc: updateBoxSettings,
         },
         {
             label: "Radius",
@@ -58,6 +52,7 @@ const ConfigPanel = ({
             minValue: 5,
             showCm: false,
             rawValue: false,
+            updateFunc: updateBinSettings,
         },
         {
             label: "Thickness",
@@ -66,6 +61,7 @@ const ConfigPanel = ({
             minValue: 2,
             showCm: false,
             rawValue: false,
+            updateFunc: updateBinSettings,
         },
         {
             label: "Width Division",
@@ -75,6 +71,7 @@ const ConfigPanel = ({
             minValue: 0.1,
             rawValue: true,
             step: 0.01,
+            updateFunc: updateBinSettings,
         },
         {
             label: "Depth Division",
@@ -84,6 +81,7 @@ const ConfigPanel = ({
             minValue: 0.1,
             rawValue: true,
             step: 0.01,
+            updateFunc: updateBinSettings,
         },
         {
             label: "Outer Gap",
@@ -92,6 +90,7 @@ const ConfigPanel = ({
             maxValue: 20,
             minValue: 0,
             step: 0.1,
+            updateFunc: updateBinSettings,
         },
         {
             label: "Inner Gap",
@@ -100,6 +99,7 @@ const ConfigPanel = ({
             maxValue: 20,
             minValue: 0,
             step: 0.1,
+            updateFunc: updateBinSettings,
         },
         {
             label: "Iterations",
@@ -108,6 +108,7 @@ const ConfigPanel = ({
             minValue: 0,
             rawValue: true,
             step: 1,
+            updateFunc: updateBinSettings,
         },
     ];
 
@@ -115,10 +116,6 @@ const ConfigPanel = ({
         <div className="flex flex-col py-2 px-5 border-l-1 border-neutral-800 antialiased bg-neutral-950 gap-2">
             <div className="flex justify-between items-center">
                 <h1 className="text-xl font-bold">Configuration</h1>
-                <i
-                    className="gg-redo cursor-pointer"
-                    onClick={setDefault}
-                ></i>
             </div>
             <div className="flex flex-col gap-2">
                 {sliders.map((slider) => {
@@ -142,12 +139,7 @@ const ConfigPanel = ({
                                 label: "text-md",
                             }}
                             hideThumb={true}
-                            onChange={(value: SliderValue) =>
-                                onConfigValueChange(
-                                    slider?.variableName ||
-                                        slider.label.toLowerCase(),
-                                    value as number
-                                )
+                            onChange={(value: SliderValue) => slider.updateFunc({ [slider.variableName || slider.label.toLowerCase()]: value })
                             }
                             getValue={(value: SliderValue) =>
                                 slider.rawValue
@@ -172,7 +164,7 @@ const ConfigPanel = ({
                         input: "font-bold"
                     }}
                     value={bedSizeX.toString()}
-                    onValueChange={(value) => onConfigValueChange("bedSizeX", +value)}
+                    onValueChange={(value) => updatePrinterSettings({ bedSizeX: +value }) }
                 />
                 <span>X</span>
                 <Input 
@@ -186,7 +178,7 @@ const ConfigPanel = ({
                         input: "font-bold"
                     }}
                     value={bedSizeY.toString()}
-                    onValueChange={(value) => onConfigValueChange("bedSizeY", +value)}
+                    onValueChange={(value) => updatePrinterSettings({ bedSizeY: +value }) }
                 />
                 </div>
 

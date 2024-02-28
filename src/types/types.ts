@@ -1,4 +1,4 @@
-type ConfigValuesProps = {
+type ConfigurationValues = {
     width: number;
     height: number;
     depth: number;
@@ -13,11 +13,29 @@ type ConfigValuesProps = {
     bedSizeY: number;
 };
 
+type DrawerSettings = Pick<ConfigurationValues, "width" | "height" | "depth">;
+type DrawerContext = DrawerSettings & {
+    updateBoxSettings: (newValues: Partial<DrawerSettings>) => void;
+};
+
+type PrinterSettings = Pick<ConfigurationValues, "bedSizeX" | "bedSizeY">;
+type PrinterContext = PrinterSettings & {
+    updatePrinterSettings: (newValues: Partial<PrinterSettings>) => void;
+};
+
+type BinSettings = Omit<
+    ConfigurationValues,
+    keyof DrawerSettings | keyof PrinterSettings
+>;
+type BinContext = BinSettings & {
+    updateBinSettings: (newValues: Partial<BinSettings>) => void;
+};
+
 type ExtraProps = {
     isExporting: boolean;
 };
 
-type BinValuesProps = Omit<
-    ConfigValuesProps,
+type BinValues = Omit<
+    ConfigurationValues,
     "divideWidth" | "divideDepth" | "outerGap" | "innerGap" | "iterations"
 >;
