@@ -15,6 +15,7 @@ import { OBJExporter } from "three/examples/jsm/exporters/OBJExporter.js";
 // Other
 import { DEFAULT_VALUES } from "./consts";
 import throttle from "lodash.throttle";
+import JSZip from "jszip";
 
 function App() {
     const [configValues, setConfigValues] = useState({
@@ -42,8 +43,11 @@ function App() {
         binMeshArray.current = refs.map((ref) => ref.current);
     };
 
-    const exportBins = () => {
+    const exportBins = async () => {
         setIsExporting(true);
+
+        const timestamp = new Date().getTime();
+        const zip = new JSZip();
 
         binMeshArray.current.forEach((binMesh, index) => {
             const exporter = new OBJExporter();
@@ -54,11 +58,11 @@ function App() {
 
             const file = exporter.parse(newMesh);
 
-            saveAs(
-                new Blob([file], { type: "text/plain" }),
-                `Bin_${index + 1}_${new Date().getTime()}.obj`
-            );
+            zip.file(`Bin_${index + 1}_${timestamp}.obj`, new Blob([file], { type: "text/plain" }))
         });
+
+        const content = await zip.generateAsync({ type: "blob" });
+        saveAs(content, `bins_${timestamp}.zip`)
 
         setIsExporting(false);
     };
