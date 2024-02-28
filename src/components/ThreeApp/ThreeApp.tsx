@@ -1,24 +1,24 @@
+// Three imports
 import { Canvas } from "@react-three/fiber";
 import { PerspectiveCamera, PresentationControls } from "@react-three/drei";
 
-import Drawer from "./objects/Drawer";
-import Measurements from "./objects/Measurements";
-import { generateBins } from "../utils/generator";
-import Bin from "./objects/Bin";
-import {
-    createRef,
-    useEffect,
-    useMemo,
-    useRef,
-    useState,
-} from "react";
+// Utilities
+import { generateBins } from "@utils/generator";
+
+// Components
+import { Drawer } from "@components/Objects/Drawer";
+import { Measurements } from "@components/Objects/Measurements";
+import { Bin } from "@components/Objects/Bin";
+
+// React imports
+import { createRef, useEffect, useMemo, useRef, useState } from "react";
 
 type Props = ConfigValuesProps & {
     updateBinMeshArray: (refs: any[]) => void;
 };
 
-const ThreeRoot = ({ updateBinMeshArray, ...props }: Props) => {
-    const binRefs = useRef([])
+const ThreeApp = ({ updateBinMeshArray, ...props }: Props) => {
+    const binRefs = useRef([]);
 
     const groupedBins = useMemo(() => {
         const bins = generateBins(
@@ -31,9 +31,11 @@ const ThreeRoot = ({ updateBinMeshArray, ...props }: Props) => {
             props.radius,
             props.thickness,
             props.innerGap
-        )
-        
-        binRefs.current = bins.map((_, index) => binRefs.current[index] ?? createRef())
+        );
+
+        binRefs.current = bins.map(
+            (_, index) => binRefs.current[index] ?? createRef()
+        );
 
         const binObjects = bins.map((bin, index) => {
             // Position in group to avoid position via the centre of the bin
@@ -71,7 +73,7 @@ const ThreeRoot = ({ updateBinMeshArray, ...props }: Props) => {
     const { width, height, depth } = props;
     const objectVolume = width * height * depth;
 
-    updateBinMeshArray(binRefs.current)
+    updateBinMeshArray(binRefs.current);
 
     const [distance, setDistance] = useState(1000);
 
@@ -82,8 +84,11 @@ const ThreeRoot = ({ updateBinMeshArray, ...props }: Props) => {
         setDistance(1000 + 1000 * normalise(objectVolume, 459000000, 687500));
     }, [objectVolume]);
 
-    const drawer = useMemo(() => Drawer(props), [width, height, depth])
-    const measurements = useMemo(() => Measurements(props), [width, height, depth]);
+    const drawer = useMemo(() => Drawer(props), [width, height, depth]);
+    const measurements = useMemo(
+        () => Measurements(props),
+        [width, height, depth]
+    );
 
     const objects = [...drawer, ...measurements, allBins];
 
@@ -91,10 +96,7 @@ const ThreeRoot = ({ updateBinMeshArray, ...props }: Props) => {
         <Canvas shadows>
             <PerspectiveCamera makeDefault position={[0, -30, distance]} />
             <ambientLight intensity={1} />
-            <spotLight
-                position={[0, 400, 100]}
-                intensity={50000}
-            />
+            <spotLight position={[0, 400, 100]} intensity={50000} />
             <rectAreaLight
                 intensity={10000}
                 position={[5, 200, distance]}
@@ -118,4 +120,4 @@ const ThreeRoot = ({ updateBinMeshArray, ...props }: Props) => {
     );
 };
 
-export default ThreeRoot;
+export default ThreeApp;

@@ -1,12 +1,20 @@
 import "./App.css";
-import ThreeRoot from "./components/ThreeRoot";
-import ConfigPanel from "./components/ConfigPanel";
-import throttle from "lodash.throttle";
+
+// Components
+import { ThreeApp } from "@components/ThreeApp";
+import { ConfigPanel } from "@components/ConfigPanel";
+
+// React imports
 import { useCallback, useRef, useState } from "react";
+
+// Three or related imports
 import { Mesh } from "three";
 import { saveAs } from "file-saver";
 import { OBJExporter } from "three/examples/jsm/exporters/OBJExporter.js";
+
+// Other
 import { DEFAULT_VALUES } from "./consts";
+import throttle from "lodash.throttle";
 
 function App() {
     const [configValues, setConfigValues] = useState({
@@ -58,7 +66,7 @@ function App() {
     return (
         <div className="bg-neutral-900 text-white grid grid-cols-[minmax(800px,_1fr)_400px] h-lvh">
             {/* Canvas for Three.js */}
-            <ThreeRoot
+            <ThreeApp
                 {...configValues}
                 updateBinMeshArray={updateBinMeshArray}
             />

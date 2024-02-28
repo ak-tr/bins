@@ -1,6 +1,6 @@
 import { ForwardedRef, forwardRef, useMemo } from "react";
-import { RoundedEdgedRectGeometry } from "../../utils/roundedEdgedRect";
 import { Mesh, MeshStandardMaterial } from "three";
+import { RoundedEdgedRectGeometry } from "@utils/roundedEdgedRect";
 
 // Unfortunately cannot use @react-three/csg here as when exporting meshes
 // that were evaluated by the @react-three/csg library, the subtractions were

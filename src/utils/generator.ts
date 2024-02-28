@@ -1,4 +1,4 @@
-import Bin from "../components/objects/Bin";
+import { Bin } from "@components/Objects/Bin";
 
 interface Bin {
     width: number;
@@ -21,7 +21,7 @@ export const generateBins = (
     iterations: number,
     radius: number,
     thickness: number,
-    innerGap: number,
+    innerGap: number
 ): Bin[] => {
     const bins: Bin[] = [];
     const halfInnerGap = innerGap / 2;
@@ -85,7 +85,7 @@ export const generateBins = (
 
     if (iterations > 1) {
         // For each initial bin, generate 4 more bins recursively
-        initialBins.forEach(initialBin => {
+        initialBins.forEach((initialBin) => {
             const subBins = generateBins(
                 initialBin.width,
                 initialBin.depth,
@@ -97,12 +97,14 @@ export const generateBins = (
                 thickness,
                 innerGap
             );
-            bins.push(...subBins.map(bin => ({
-                ...bin,
-                x: initialBin.x + bin.x,
-                y: initialBin.y + bin.y,
-                z: initialBin.z + bin.z
-            })));
+            bins.push(
+                ...subBins.map((bin) => ({
+                    ...bin,
+                    x: initialBin.x + bin.x,
+                    y: initialBin.y + bin.y,
+                    z: initialBin.z + bin.z,
+                }))
+            );
         });
     }
 

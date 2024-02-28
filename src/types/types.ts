@@ -15,13 +15,9 @@ type ConfigValuesProps = {
 
 type ExtraProps = {
     isExporting: boolean;
-}
+};
 
 type BinValuesProps = Omit<
     ConfigValuesProps,
-    | "divideWidth"
-    | "divideDepth"
-    | "outerGap"
-    | "innerGap"
-    | "iterations"
+    "divideWidth" | "divideDepth" | "outerGap" | "innerGap" | "iterations"
 >;
