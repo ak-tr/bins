@@ -14,8 +14,6 @@ extend({ TextGeometry });
 const Measurements = ({ width, height, depth }: DrawerSettings) => {
     const font = new FontLoader().parse(spaceMonoFont as unknown as FontData);
 
-    new FontLoader();
-
     const measurements = [
         {
             value: `${depth}mm`,

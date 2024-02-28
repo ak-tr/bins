@@ -7,6 +7,7 @@ import { RoundedEdgedRectGeometry } from "@utils/roundedEdgedRect";
 // not being taken into effect. Using three-bvh-csg which is what @react-three/csg
 // is based on seemed to do the trick for some odd reason.
 import { SUBTRACTION, Brush, Evaluator } from "three-bvh-csg";
+import { IndexNumber } from "@components/Objects/IndexNumber";
 
 const Bin = forwardRef(
     (
@@ -18,7 +19,8 @@ const Bin = forwardRef(
             thickness,
             bedSizeX,
             bedSizeY,
-        }: BinValues,
+            index,
+        }: BinValues & { index: number },
         ref: ForwardedRef<Mesh>
     ) => {
         const roundedEdgedRect = RoundedEdgedRectGeometry(
@@ -37,7 +39,10 @@ const Bin = forwardRef(
         const canFitOnPrinterBed = width < bedSizeX && depth < bedSizeY;
         const color = canFitOnPrinterBed ? "lightblue" : "salmon";
 
-        const material = useMemo(() => new MeshStandardMaterial({ color }), [color]);
+        const material = useMemo(
+            () => new MeshStandardMaterial({ color }),
+            [color]
+        );
 
         const roundedEdgedRectBrush = new Brush(roundedEdgedRect);
         roundedEdgedRectBrush.updateMatrixWorld();
@@ -55,8 +60,16 @@ const Bin = forwardRef(
 
         return (
             <group position={[width / 2, 0, depth / 2]}>
-                <mesh ref={ref} geometry={result.geometry} material={material} receiveShadow>
-                </mesh>
+                <IndexNumber
+                    position={[index + 1 > 9 ? -11 : -6, height / 2 + 2, 0]}
+                    value={(index + 1).toString()}
+                />
+                <mesh
+                    ref={ref}
+                    geometry={result.geometry}
+                    material={material}
+                    receiveShadow
+                ></mesh>
             </group>
         );
     }

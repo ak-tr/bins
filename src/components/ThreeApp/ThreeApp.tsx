@@ -65,6 +65,7 @@ const ThreeApp = ({ updateBinMeshArray }: Props) => {
                         thickness={bin.thickness}
                         bedSizeX={bedSizeX}
                         bedSizeY={bedSizeY}
+                        index={index}
                     />
                 </group>
             );
