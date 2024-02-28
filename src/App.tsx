@@ -17,6 +17,7 @@ import JSZip from "jszip";
 import { DrawerSettingsContextProvider } from "context/DrawerSettingsContext";
 import { BinSettingsContextProvider } from "context/BinSettingsContext";
 import { PrinterSettingsContextProvider } from "context/PrinterSettingsContext";
+import { PageSettingsContextProvider } from "context/PageSettingsContext";
 
 import { NextUIProvider } from "@nextui-org/react";
 
@@ -62,15 +63,17 @@ function App() {
                 <DrawerSettingsContextProvider>
                     <BinSettingsContextProvider>
                         <PrinterSettingsContextProvider>
-                            <ThreeApp
-                                updateBinMeshArray={updateBinMeshArray}
-                            />
-                            <NextUIProvider>
-                                <ConfigPanel
-                                    {...props}
-                                    exportBins={exportBins}
+                            <PageSettingsContextProvider>
+                                <ThreeApp
+                                    updateBinMeshArray={updateBinMeshArray}
                                 />
-                            </NextUIProvider>
+                                <NextUIProvider>
+                                    <ConfigPanel
+                                        {...props}
+                                        exportBins={exportBins}
+                                    />
+                                </NextUIProvider>
+                            </PageSettingsContextProvider>
                         </PrinterSettingsContextProvider>
                     </BinSettingsContextProvider>
                 </DrawerSettingsContextProvider>

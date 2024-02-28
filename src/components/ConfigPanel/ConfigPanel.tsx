@@ -7,11 +7,13 @@ import {
     Input,
     Accordion,
     AccordionItem,
+    Checkbox,
 } from "@nextui-org/react";
 
 // Contexts
 import { useBinContext } from "context/BinSettingsContext";
 import { useDrawerContext } from "context/DrawerSettingsContext";
+import { usePageContext } from "context/PageSettingsContext";
 import { usePrinterContext } from "context/PrinterSettingsContext";
 
 type Props = ExtraProps & {
@@ -33,6 +35,11 @@ const ConfigPanel = ({ isExporting, exportBins }: Props) => {
     } = useBinContext() as BinContext;
     const { bedSizeX, bedSizeY, updatePrinterSettings } =
         usePrinterContext() as PrinterContext;
+    const {
+        areMeasurementsEnabled,
+        areIndexNumbersEnabled,
+        updatePageSettings,
+    } = usePageContext() as PageContext;
 
     const size = "lg";
 
@@ -134,6 +141,21 @@ const ConfigPanel = ({ isExporting, exportBins }: Props) => {
         },
     ];
 
+    const checkboxes = [
+        {
+            label: "Show measurements",
+            variableName: "areMeasurementsEnabled",
+            value: areMeasurementsEnabled,
+            updateFunc: updatePageSettings,
+        },
+        {
+            label: "Show index numbers",
+            variableName: "areIndexNumbersEnabled",
+            value: areIndexNumbersEnabled,
+            updateFunc: updatePageSettings,
+        },
+    ];
+
     const sliderComponent = (sliderSettings: any) => {
         return (
             <Slider
@@ -173,7 +195,9 @@ const ConfigPanel = ({ isExporting, exportBins }: Props) => {
     return (
         <div className="h-full flex flex-col py-4 px-5 border-l-1 border-neutral-800 antialiased bg-neutral-950 gap-2">
             <div className="flex justify-between items-center">
-                <h1 className="text-xl font-bold tracking-wide">Configuration</h1>
+                <h1 className="text-xl font-bold tracking-wide">
+                    Configuration
+                </h1>
             </div>
             <Accordion
                 selectionMode="multiple"
@@ -246,6 +270,32 @@ const ConfigPanel = ({ isExporting, exportBins }: Props) => {
                                 }
                             />
                         </div>
+                    </div>
+                </AccordionItem>
+                <AccordionItem
+                    key="4"
+                    title="Page Settings"
+                    classNames={{ title: "!text-white font-bold" }}
+                >
+                    <div className="flex flex-col gap-2">
+                        {checkboxes.map((checkbox, index) => {
+                            return (
+                                <Checkbox
+                                    key={index}
+                                    isSelected={checkbox.value}
+                                    onValueChange={(isSelected: boolean) =>
+                                        checkbox.updateFunc({
+                                            [checkbox.variableName]: isSelected,
+                                        })
+                                    }
+                                    classNames={{
+                                        label: "text-white"
+                                    }}
+                                >
+                                    {checkbox.label}
+                                </Checkbox>
+                            );
+                        })}
                     </div>
                 </AccordionItem>
             </Accordion>

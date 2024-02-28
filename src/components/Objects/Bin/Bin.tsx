@@ -8,6 +8,7 @@ import { RoundedEdgedRectGeometry } from "@utils/roundedEdgedRect";
 // is based on seemed to do the trick for some odd reason.
 import { SUBTRACTION, Brush, Evaluator } from "three-bvh-csg";
 import { IndexNumber } from "@components/Objects/IndexNumber";
+import { usePageContext } from "context/PageSettingsContext";
 
 const Bin = forwardRef(
     (
@@ -23,6 +24,8 @@ const Bin = forwardRef(
         }: BinValues & { index: number },
         ref: ForwardedRef<Mesh>
     ) => {
+        const { areIndexNumbersEnabled } = usePageContext() as PageContext;
+
         const roundedEdgedRect = RoundedEdgedRectGeometry(
             width,
             height,
@@ -60,10 +63,10 @@ const Bin = forwardRef(
 
         return (
             <group position={[width / 2, 0, depth / 2]}>
-                <IndexNumber
+                {areIndexNumbersEnabled && <IndexNumber
                     position={[index + 1 > 9 ? -11 : -6, height / 2 + 2, 0]}
                     value={(index + 1).toString()}
-                />
+                />}
                 <mesh
                     ref={ref}
                     geometry={result.geometry}

@@ -1,4 +1,4 @@
-export const DEFAULT_VALUES = {
+export const DEFAULT_VALUES: ConfigurationValues = {
     width: 320,
     height: 130,
     depth: 560,
@@ -11,4 +11,9 @@ export const DEFAULT_VALUES = {
     bedSizeX: 220,
     bedSizeY: 220,
     iterations: 1,
+};
+
+export const DEFAULT_PAGE_SETTINGS: PageSettings = {
+    areMeasurementsEnabled: true,
+    areIndexNumbersEnabled: true,
 };

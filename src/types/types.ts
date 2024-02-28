@@ -31,6 +31,14 @@ type BinContext = BinSettings & {
     updateBinSettings: (newValues: Partial<BinSettings>) => void;
 };
 
+type PageSettings = {
+    areMeasurementsEnabled: boolean;
+    areIndexNumbersEnabled: boolean;
+};
+type PageContext = PageSettings & {
+    updatePageSettings: (newValues: Partial<PageSettings>) => void;
+};
+
 type ExtraProps = {
     isExporting: boolean;
 };

@@ -15,6 +15,7 @@ import { createRef, useEffect, useMemo, useRef, useState } from "react";
 import { useDrawerContext } from "context/DrawerSettingsContext";
 import { useBinContext } from "context/BinSettingsContext";
 import { usePrinterContext } from "context/PrinterSettingsContext";
+import { usePageContext } from "context/PageSettingsContext";
 
 type Props = {
     updateBinMeshArray: (refs: any[]) => void;
@@ -32,6 +33,7 @@ const ThreeApp = ({ updateBinMeshArray }: Props) => {
         iterations,
     } = useBinContext() as BinContext;
     const { bedSizeX, bedSizeY } = usePrinterContext() as PrinterContext;
+    const { areMeasurementsEnabled } = usePageContext() as PageContext;
 
     const binRefs = useRef([]);
 
@@ -117,7 +119,9 @@ const ThreeApp = ({ updateBinMeshArray }: Props) => {
         [width, height, depth]
     );
 
-    const objects = [...drawer, ...measurements, allBins];
+    const objects = [...drawer, allBins];
+
+    if (areMeasurementsEnabled) objects.push(...measurements);
 
     return (
         <Canvas shadows>
