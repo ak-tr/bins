@@ -1,4 +1,15 @@
-import { Slider, SliderValue, Link, Button, Input } from "@nextui-org/react";
+// UI Components
+import {
+    Slider,
+    SliderValue,
+    Link,
+    Button,
+    Input,
+    Accordion,
+    AccordionItem,
+} from "@nextui-org/react";
+
+// Contexts
 import { useBinContext } from "context/BinSettingsContext";
 import { useDrawerContext } from "context/DrawerSettingsContext";
 import { usePrinterContext } from "context/PrinterSettingsContext";
@@ -7,17 +18,25 @@ type Props = ExtraProps & {
     exportBins: () => void;
 };
 
-const ConfigPanel = ({
-    isExporting,
-    exportBins,
-}: Props) => {
-    const { width, height, depth, updateBoxSettings } = useDrawerContext() as DrawerContext;
-    const { radius, thickness, divideWidth, divideDepth, outerGap, innerGap, iterations, updateBinSettings } = useBinContext() as BinContext;
-    const { bedSizeX, bedSizeY, updatePrinterSettings } = usePrinterContext() as PrinterContext;
+const ConfigPanel = ({ isExporting, exportBins }: Props) => {
+    const { width, height, depth, updateBoxSettings } =
+        useDrawerContext() as DrawerContext;
+    const {
+        radius,
+        thickness,
+        divideWidth,
+        divideDepth,
+        outerGap,
+        innerGap,
+        iterations,
+        updateBinSettings,
+    } = useBinContext() as BinContext;
+    const { bedSizeX, bedSizeY, updatePrinterSettings } =
+        usePrinterContext() as PrinterContext;
 
     const size = "lg";
 
-    const sliders = [
+    const boxSettingsSliders = [
         {
             label: "Width",
             value: width,
@@ -45,6 +64,9 @@ const ConfigPanel = ({
             rawValue: false,
             updateFunc: updateBoxSettings,
         },
+    ];
+
+    const binSettingsSliders = [
         {
             label: "Radius",
             value: radius,
@@ -112,77 +134,122 @@ const ConfigPanel = ({
         },
     ];
 
-    return (
-        <div className="flex flex-col py-2 px-5 border-l-1 border-neutral-800 antialiased bg-neutral-950 gap-2">
-            <div className="flex justify-between items-center">
-                <h1 className="text-xl font-bold">Configuration</h1>
-            </div>
-            <div className="flex flex-col gap-2">
-                {sliders.map((slider) => {
-                    return (
-                        <Slider
-                            key={slider.label}
-                            label={slider.label}
-                            size={size}
-                            step={slider.step || 1}
-                            maxValue={slider.maxValue}
-                            minValue={slider.minValue}
-                            aria-label={slider.label}
-                            value={slider.value}
-                            className="max-w-md"
-                            classNames={{
-                                filler: "bg-white",
-                                track: "rounded bg-black cursor-ew-resize",
-                                labelWrapper:
-                                    "relative top-5 h-0 px-2 z-50 mix-blend-difference pointer-events-none",
-                                value: "text-md",
-                                label: "text-md",
-                            }}
-                            hideThumb={true}
-                            onChange={(value: SliderValue) => slider.updateFunc({ [slider.variableName || slider.label.toLowerCase()]: value })
-                            }
-                            getValue={(value: SliderValue) =>
-                                slider.rawValue
-                                    ? value.toString()
-                                    : `${(value as number)}mm`
-                            }
-                        />
-                    );
-                })}
-            </div>
-            <div className="w-full flex flex-col gap-2 mt-2">
-                <span>Printer Bed Size (X, Y)</span>
-                <div className="flex gap-3 items-center">
-                <Input 
-                    type="number"
-                    radius="sm"
-                    endContent={
-                        <span className="font-bold text-black">mm</span>
-                    }
-                    classNames={{
-                        inputWrapper: "h-10",
-                        input: "font-bold"
-                    }}
-                    value={bedSizeX.toString()}
-                    onValueChange={(value) => updatePrinterSettings({ bedSizeX: +value }) }
-                />
-                <span>X</span>
-                <Input 
-                    type="number"
-                    radius="sm"
-                    endContent={
-                        <span className="font-bold text-black">mm</span>
-                    }
-                    classNames={{
-                        inputWrapper: "h-10",
-                        input: "font-bold"
-                    }}
-                    value={bedSizeY.toString()}
-                    onValueChange={(value) => updatePrinterSettings({ bedSizeY: +value }) }
-                />
-                </div>
+    const sliderComponent = (sliderSettings: any) => {
+        return (
+            <Slider
+                key={sliderSettings.label}
+                label={sliderSettings.label}
+                size={size}
+                step={sliderSettings.step || 1}
+                maxValue={sliderSettings.maxValue}
+                minValue={sliderSettings.minValue}
+                aria-label={sliderSettings.label}
+                value={sliderSettings.value}
+                className="max-w-md"
+                classNames={{
+                    filler: "bg-white",
+                    track: "rounded bg-black cursor-ew-resize",
+                    labelWrapper:
+                        "relative top-5 h-0 px-2 z-50 mix-blend-difference pointer-events-none",
+                    value: "text-md",
+                    label: "text-md",
+                }}
+                hideThumb={true}
+                onChange={(value: SliderValue) =>
+                    sliderSettings.updateFunc({
+                        [sliderSettings.variableName ||
+                        sliderSettings.label.toLowerCase()]: value,
+                    })
+                }
+                getValue={(value: SliderValue) =>
+                    sliderSettings.rawValue
+                        ? value.toString()
+                        : `${value as number}mm`
+                }
+            />
+        );
+    };
 
+    return (
+        <div className="h-full flex flex-col py-4 px-5 border-l-1 border-neutral-800 antialiased bg-neutral-950 gap-2">
+            <div className="flex justify-between items-center">
+                <h1 className="text-xl font-bold tracking-wide">Configuration</h1>
             </div>
+            <Accordion
+                selectionMode="multiple"
+                defaultExpandedKeys={["1", "2"]}
+                isCompact={true}
+            >
+                <AccordionItem
+                    key="1"
+                    title="Box Settings"
+                    classNames={{ title: "!text-white font-bold" }}
+                >
+                    <div className="flex flex-col gap-2">
+                        {boxSettingsSliders.map((slider) => {
+                            return sliderComponent(slider);
+                        })}
+                    </div>
+                </AccordionItem>
+                <AccordionItem
+                    key="2"
+                    title="Bin Settings"
+                    classNames={{ title: "!text-white font-bold" }}
+                >
+                    <div className="flex flex-col gap-2">
+                        {binSettingsSliders.map((slider) => {
+                            return sliderComponent(slider);
+                        })}
+                    </div>
+                </AccordionItem>
+                <AccordionItem
+                    key="3"
+                    title="Printer Settings"
+                    classNames={{ title: "!text-white font-bold" }}
+                >
+                    <div className="w-full flex flex-col gap-2 mt-2">
+                        <span>Printer Bed Size (X, Y)</span>
+                        <div className="flex gap-3 items-center">
+                            <Input
+                                type="number"
+                                radius="sm"
+                                endContent={
+                                    <span className="font-bold text-black">
+                                        mm
+                                    </span>
+                                }
+                                classNames={{
+                                    inputWrapper: "h-10",
+                                    input: "font-bold",
+                                }}
+                                value={bedSizeX.toString()}
+                                onValueChange={(value) =>
+                                    updatePrinterSettings({ bedSizeX: +value })
+                                }
+                            />
+                            <span>X</span>
+                            <Input
+                                type="number"
+                                radius="sm"
+                                endContent={
+                                    <span className="font-bold text-black">
+                                        mm
+                                    </span>
+                                }
+                                classNames={{
+                                    inputWrapper: "h-10",
+                                    input: "font-bold",
+                                }}
+                                value={bedSizeY.toString()}
+                                onValueChange={(value) =>
+                                    updatePrinterSettings({ bedSizeY: +value })
+                                }
+                            />
+                        </div>
+                    </div>
+                </AccordionItem>
+            </Accordion>
+
             <div className="flex flex-col grow justify-end gap-4">
                 <Button
                     radius="sm"

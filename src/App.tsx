@@ -18,6 +18,8 @@ import { DrawerSettingsContextProvider } from "context/DrawerSettingsContext";
 import { BinSettingsContextProvider } from "context/BinSettingsContext";
 import { PrinterSettingsContextProvider } from "context/PrinterSettingsContext";
 
+import { NextUIProvider } from "@nextui-org/react";
+
 function App() {
     const [isExporting, setIsExporting] = useState(false);
     const binMeshArray = useRef<Mesh[]>([]);
@@ -57,19 +59,21 @@ function App() {
 
     return (
         <div className="bg-neutral-900 text-white grid grid-cols-[minmax(800px,_1fr)_400px] h-lvh">
-            <DrawerSettingsContextProvider>
-                <BinSettingsContextProvider>
-                    <PrinterSettingsContextProvider>
-                        <ThreeApp
-                            updateBinMeshArray={updateBinMeshArray}
-                        />
-                        <ConfigPanel
-                            {...props}
-                            exportBins={exportBins}
-                        />
-                    </PrinterSettingsContextProvider>
-                </BinSettingsContextProvider>
-            </DrawerSettingsContextProvider>
+                <DrawerSettingsContextProvider>
+                    <BinSettingsContextProvider>
+                        <PrinterSettingsContextProvider>
+                            <ThreeApp
+                                updateBinMeshArray={updateBinMeshArray}
+                            />
+                            <NextUIProvider>
+                                <ConfigPanel
+                                    {...props}
+                                    exportBins={exportBins}
+                                />
+                            </NextUIProvider>
+                        </PrinterSettingsContextProvider>
+                    </BinSettingsContextProvider>
+                </DrawerSettingsContextProvider>
         </div>
     );
 }
