@@ -6,7 +6,7 @@ const defaultValue = { width, depth, height };
 
 const DrawerSettingsContext = createContext<DrawerContext | undefined>(undefined);
 
-export const DrawerSettingsContextProvider = ({ children }: any) => {
+export const DrawerSettingsContextProvider = ({ children }: ContextProviderProps) => {
     const [boxSettings, setBoxSettings] = useState(defaultValue);
 
     const updateBoxSettings = (newValues: Partial<DrawerSettings>) => {

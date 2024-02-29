@@ -39,6 +39,8 @@ type PageContext = PageSettings & {
     updatePageSettings: (newValues: Partial<PageSettings>) => void;
 };
 
+type ContextProviderProps = { children?: import("react").ReactNode };
+
 type ExtraProps = {
     isExporting: boolean;
 };

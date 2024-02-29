@@ -58,25 +58,26 @@ function App() {
         setIsExporting(false);
     };
 
+    const AllSettingsProviders = ({ children }: ContextProviderProps) => (
+        <DrawerSettingsContextProvider>
+            <BinSettingsContextProvider>
+                <PrinterSettingsContextProvider>
+                    <PageSettingsContextProvider>
+                        {children}
+                    </PageSettingsContextProvider>
+                </PrinterSettingsContextProvider>
+            </BinSettingsContextProvider>
+        </DrawerSettingsContextProvider>
+    );
+
     return (
         <div className="bg-neutral-900 text-white grid grid-cols-[minmax(800px,_1fr)_400px] h-lvh">
-                <DrawerSettingsContextProvider>
-                    <BinSettingsContextProvider>
-                        <PrinterSettingsContextProvider>
-                            <PageSettingsContextProvider>
-                                <ThreeApp
-                                    updateBinMeshArray={updateBinMeshArray}
-                                />
-                                <NextUIProvider>
-                                    <ConfigPanel
-                                        {...props}
-                                        exportBins={exportBins}
-                                    />
-                                </NextUIProvider>
-                            </PageSettingsContextProvider>
-                        </PrinterSettingsContextProvider>
-                    </BinSettingsContextProvider>
-                </DrawerSettingsContextProvider>
+            <AllSettingsProviders>
+                <ThreeApp updateBinMeshArray={updateBinMeshArray} />
+                <NextUIProvider>
+                    <ConfigPanel {...props} exportBins={exportBins} />
+                </NextUIProvider>
+            </AllSettingsProviders>
         </div>
     );
 }

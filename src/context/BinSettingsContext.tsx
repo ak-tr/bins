@@ -6,7 +6,7 @@ const defaultValue = { radius, thickness, divideWidth, divideDepth, outerGap, in
 
 const BinSettingsContext = createContext<BinContext | undefined>(undefined);
 
-export const BinSettingsContextProvider = ({ children }: any) => {
+export const BinSettingsContextProvider = ({ children }: ContextProviderProps) => {
     const [binSettings, setBinSettings] = useState(defaultValue);
 
     const updateBinSettings = (newValues: Partial<BinSettings>) => {

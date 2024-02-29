@@ -6,7 +6,7 @@ const defaultValue = { bedSizeX, bedSizeY };
 
 const PrinterSettingsContext = createContext<PrinterContext | undefined>(undefined);
 
-export const PrinterSettingsContextProvider = ({ children }: any) => {
+export const PrinterSettingsContextProvider = ({ children }: ContextProviderProps) => {
     const [printerSettings, setPrinterSettings] = useState(defaultValue);
 
     const updatePrinterSettings = (newValues: Partial<PrinterSettings>) => {

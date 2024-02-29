@@ -6,7 +6,7 @@ const defaultValue = { areMeasurementsEnabled, areIndexNumbersEnabled };
 
 const PageSettingsContext = createContext<PageContext | undefined>(undefined);
 
-export const PageSettingsContextProvider = ({ children }: any) => {
+export const PageSettingsContextProvider = ({ children }: ContextProviderProps) => {
     const [pageSettings, setPageSettings] = useState(defaultValue);
 
     const updatePageSettings = (newValues: Partial<PageSettings>) => {
