@@ -39,8 +39,8 @@ const ThreeApp = ({ updateBinMeshArray }: Props) => {
 
     const groupedBins = useMemo(() => {
         const bins = generateBins(
-            width - outerGap,
-            depth - outerGap,
+            width - outerGap * 2,
+            depth - outerGap * 2,
             height,
             divideWidth,
             divideDepth,
@@ -91,7 +91,7 @@ const ThreeApp = ({ updateBinMeshArray }: Props) => {
 
     const allBins = (
         <group
-            position={[-width / 2 + outerGap / 2, 0, -depth / 2 + outerGap / 2]}
+            position={[-width / 2 + outerGap, 0, -depth / 2 + outerGap]}
         >
             {...groupedBins}
         </group>
