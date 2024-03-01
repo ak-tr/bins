@@ -193,7 +193,7 @@ const ConfigPanel = ({ isExporting, exportBins }: Props) => {
     };
 
     return (
-        <div className="h-full flex flex-col py-4 px-5 border-l-1 border-neutral-800 antialiased bg-neutral-950 gap-2">
+        <div className="max-h-64 sm:h-full sm:max-h-full overflow-auto flex flex-col py-4 px-5 border-l-1 border-t-1 sm:border-t-0 border-neutral-800 antialiased bg-neutral-950 gap-2">
             <div className="flex justify-between items-center">
                 <h1 className="text-xl font-bold tracking-wide">
                     Configuration
@@ -289,7 +289,7 @@ const ConfigPanel = ({ isExporting, exportBins }: Props) => {
                                         })
                                     }
                                     classNames={{
-                                        label: "text-white"
+                                        label: "text-white",
                                     }}
                                 >
                                     {checkbox.label}

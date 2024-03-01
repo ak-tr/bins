@@ -71,7 +71,7 @@ function App() {
     );
 
     return (
-        <div className="bg-neutral-900 text-white grid grid-cols-[minmax(800px,_1fr)_400px] h-lvh">
+        <div className="bg-neutral-900 text-white grid md:grid-cols-[minmax(800px,_1fr)_400px] h-lvh">
             <AllSettingsProviders>
                 <ThreeApp updateBinMeshArray={updateBinMeshArray} />
                 <NextUIProvider>
