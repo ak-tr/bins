@@ -64,7 +64,7 @@ const Bin = forwardRef(
         return (
             <group position={[width / 2, 0, depth / 2]}>
                 {areIndexNumbersEnabled && <IndexNumber
-                    position={[index + 1 > 9 ? -11 : -6, height / 2 + 2, 0]}
+                    position={[index + 1 > 9 ? -11 : -6, height / 2 + 2, 7]}
                     value={(index + 1).toString()}
                 />}
                 <mesh
