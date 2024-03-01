@@ -9,17 +9,15 @@ import { useMemo, useRef, useState } from "react";
 
 // Three or related imports
 import { Mesh } from "three";
-import { saveAs } from "file-saver";
-import { OBJExporter } from "three/examples/jsm/exporters/OBJExporter.js";
 
 // Other
-import JSZip from "jszip";
 import { DrawerSettingsContextProvider } from "context/DrawerSettingsContext";
 import { BinSettingsContextProvider } from "context/BinSettingsContext";
 import { PrinterSettingsContextProvider } from "context/PrinterSettingsContext";
 import { PageSettingsContextProvider } from "context/PageSettingsContext";
 
 import { NextUIProvider } from "@nextui-org/react";
+import { exportMeshesToObj } from "@utils/exporter";
 
 function App() {
     const [isExporting, setIsExporting] = useState(false);
@@ -34,28 +32,14 @@ function App() {
     const exportBins = async () => {
         setIsExporting(true);
 
-        const timestamp = new Date().getTime();
-        const zip = new JSZip();
-
-        binMeshArray.current.forEach((binMesh, index) => {
-            const exporter = new OBJExporter();
-
-            const newMesh = new Mesh(binMesh.geometry);
-            newMesh.rotateX(Math.PI / 2);
-            newMesh.updateMatrixWorld();
-
-            const file = exporter.parse(newMesh);
-
-            zip.file(
-                `Bin_${index + 1}_${timestamp}.obj`,
-                new Blob([file], { type: "text/plain" })
-            );
-        });
-
-        const content = await zip.generateAsync({ type: "blob" });
-        saveAs(content, `bins_${timestamp}.zip`);
-
-        setIsExporting(false);
+        try {
+            await exportMeshesToObj(binMeshArray);
+        } catch (err) {
+            console.log("Error exporting bins");
+            console.log(err);
+        } finally {
+            setIsExporting(false);
+        }
     };
 
     const AllSettingsProviders = useMemo(() => {
