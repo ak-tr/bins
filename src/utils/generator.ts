@@ -85,13 +85,19 @@ export const generateBins = (
 
     if (iterations > 1) {
         // For each initial bin, generate 4 more bins recursively
-        initialBins.forEach((initialBin) => {
+        initialBins.forEach((initialBin, index) => {
+            // Flip divideWidth and divideDepth for every second bin
+            const flippedDivideWidth =
+                index % 2 === 0 ? divideDepth : divideWidth;
+            const flippedDivideDepth =
+                index % 2 === 0 ? divideWidth : divideDepth;
+
             const subBins = generateBins(
                 initialBin.width,
                 initialBin.depth,
                 initialBin.height,
-                divideWidth,
-                divideDepth,
+                flippedDivideWidth,
+                flippedDivideDepth,
                 iterations - 1,
                 radius,
                 thickness,

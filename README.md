@@ -4,8 +4,6 @@ Bins is a 3D printable procedural bin generator where the user can provide width
 
 I was originally inspired to create this project when I saw the ["dojo-recursive-bins"](https://github.com/node-dojo/dojo-recursive-bins/) implementation leveraging Blender's Geometry Nodes. You can learn more about that [here](https://nodedojo.gumroad.com/l/dojobin?layout=profile).
 
-This project does not generate the bins in the same way as the project specified above. This was the easiest way I could get an implementation of this - I will look into improving this in the future. However, I do think the way that it generates currently could be more useable in the real world.
-
 ## Demo
 
 ![](https://github.com/ak-tr/bins/assets/62529128/a9e736de-aa7c-4acb-81e7-b61512493599)
@@ -20,7 +18,7 @@ Currently there are 10 adjustable parameters that affect the generation of the b
 -   Height - Height of the drawer.
 -   Depth - Depth of the drawer.
 -   Radius - Corner radius of each box.
--   Thickness - Wall thickness of each box, this includes the thickness of the bottom of the box though this will most likely change in the future.
+-   Thickness - Wall thickness of each box. Bottom layer thickness is fixed to 5mm.
 -   Width Division - Value between 0 and 1 used to calculate how to allocate space to the boxes in the X dimension.
 -   Depth Division - Value between 0 and 1 used to calculate how to allocate space to the boxes in the Z dimension.
 -   Outer Gap - Gap between all outer edges of the bins that meet with the inner drawer walls.
@@ -33,7 +31,6 @@ Currently there are 10 adjustable parameters that affect the generation of the b
 
 ## Roadmap
 
--   Improve bin generation when iterations is more than 1 - currently doesn't look very procedural (or random), maybe not generating correctly.
 -   Add printer bed with layer visualisation like the implementation by [Node Dojo](https://github.com/node-dojo/dojo-recursive-bins/)
 -   Add a different way to visualise the generated bins, maybe like a carousel(?), top down view or something of that sort.
 
