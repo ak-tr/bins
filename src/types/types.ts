@@ -34,6 +34,7 @@ type BinContext = BinSettings & {
 type PageSettings = {
     areMeasurementsEnabled: boolean;
     areIndexNumbersEnabled: boolean;
+    isVaseMode: boolean;
 };
 type PageContext = PageSettings & {
     updatePageSettings: (newValues: Partial<PageSettings>) => void;

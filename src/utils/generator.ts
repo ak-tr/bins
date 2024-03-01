@@ -1,5 +1,3 @@
-import { Bin } from "@components/Objects/Bin";
-
 interface Bin {
     width: number;
     depth: number;

@@ -20,8 +20,9 @@ const Bin = forwardRef(
             thickness,
             bedSizeX,
             bedSizeY,
+            isVaseMode,
             index,
-        }: BinValues & { index: number },
+        }: BinValues & { isVaseMode: boolean, index: number },
         ref: ForwardedRef<Mesh>
     ) => {
         const { areIndexNumbersEnabled } = usePageContext() as PageContext;
@@ -68,11 +69,16 @@ const Bin = forwardRef(
                     value={(index + 1).toString()}
                 />}
                 <mesh
-                    ref={ref}
+                    ref={!isVaseMode ? ref : undefined}
                     geometry={result.geometry}
                     material={material}
                     receiveShadow
-                ></mesh>
+                />
+                <mesh
+                    ref={isVaseMode ? ref : undefined}
+                    geometry={roundedEdgedRect}
+                    visible={false}
+                />
             </group>
         );
     }

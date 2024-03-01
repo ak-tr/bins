@@ -39,6 +39,7 @@ const ConfigPanel = ({ isExporting, exportBins }: Props) => {
     const {
         areMeasurementsEnabled,
         areIndexNumbersEnabled,
+        isVaseMode,
         updatePageSettings,
     } = usePageContext() as PageContext;
 
@@ -165,6 +166,12 @@ const ConfigPanel = ({ isExporting, exportBins }: Props) => {
             value: areIndexNumbersEnabled,
             updateFunc: updatePageSettings,
         },
+        {
+            label: "Export as 'Vase Mode' object",
+            variableName: "isVaseMode",
+            value: isVaseMode,
+            updateFunc: updatePageSettings,
+        },
     ];
 
     const sliderComponent = (sliderSettings: any) => {
@@ -284,7 +291,7 @@ const ConfigPanel = ({ isExporting, exportBins }: Props) => {
                     title="Printer Settings"
                     classNames={{ title: "!text-white font-bold" }}
                 >
-                    <div className="w-full flex flex-col gap-2 mt-2">
+                    <div className="w-full flex flex-col gap-2">
                         <span>Printer Bed Size (X, Y)</span>
                         <div className="flex gap-3 items-center">
                             <Input

@@ -1,8 +1,8 @@
 import { createContext, useContext, useState } from "react";
 import { DEFAULT_PAGE_SETTINGS } from "constants";
 
-const { areMeasurementsEnabled, areIndexNumbersEnabled } = DEFAULT_PAGE_SETTINGS;
-const defaultValue = { areMeasurementsEnabled, areIndexNumbersEnabled };
+const { areMeasurementsEnabled, areIndexNumbersEnabled, isVaseMode } = DEFAULT_PAGE_SETTINGS;
+const defaultValue = { areMeasurementsEnabled, areIndexNumbersEnabled, isVaseMode };
 
 const PageSettingsContext = createContext<PageContext | undefined>(undefined);
 

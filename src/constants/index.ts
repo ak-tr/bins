@@ -16,4 +16,5 @@ export const DEFAULT_VALUES: ConfigurationValues = {
 export const DEFAULT_PAGE_SETTINGS: PageSettings = {
     areMeasurementsEnabled: true,
     areIndexNumbersEnabled: true,
+    isVaseMode: false,
 };

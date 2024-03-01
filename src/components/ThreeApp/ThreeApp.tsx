@@ -33,7 +33,7 @@ const ThreeApp = ({ updateBinMeshArray }: Props) => {
         iterations,
     } = useBinContext() as BinContext;
     const { bedSizeX, bedSizeY } = usePrinterContext() as PrinterContext;
-    const { areMeasurementsEnabled } = usePageContext() as PageContext;
+    const { areMeasurementsEnabled, isVaseMode } = usePageContext() as PageContext;
 
     const binRefs = useRef([]);
 
@@ -67,6 +67,7 @@ const ThreeApp = ({ updateBinMeshArray }: Props) => {
                         thickness={bin.thickness}
                         bedSizeX={bedSizeX}
                         bedSizeY={bedSizeY}
+                        isVaseMode={isVaseMode}
                         index={index}
                     />
                 </group>

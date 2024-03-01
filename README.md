@@ -5,6 +5,7 @@ Bins is a 3D printable procedural bin generator where the user can provide width
 I was originally inspired to create this project when I saw the ["dojo-recursive-bins"](https://github.com/node-dojo/dojo-recursive-bins/) implementation leveraging Blender's Geometry Nodes. You can learn more about that [here](https://nodedojo.gumroad.com/l/dojobin?layout=profile).
 
 ## Demo
+
 ![Recording showing demo of bins project](https://github.com/ak-tr/bins/assets/62529128/a2c87ad5-b81f-458e-8c2e-73be30e90733)
 
 Feel free to play around with it at [bins.akif.kr](https://bins.akif.kr).
@@ -24,6 +25,8 @@ Currently there are 10 adjustable parameters that affect the generation of the b
 -   Inner Gap - Gap between walls on all bins which meet another bin.
 -   Iterations - How many times to procedurally generate bins using the initial 4 bins.
 
+There is also a checkbox under "Page Settings" that you can enable which will export the bins as non hollow objects. This allows you to print them in vase mode if you would like that option.
+
 ## Current Bugs/Known Issues
 
 -   Generated .obj files have a large amount of open edges as warned by PrusaSlicer. Tested with Cura and PrusaSlicer and this doesn't affect its printability but can be quite annoying.
@@ -38,6 +41,7 @@ Currently there are 10 adjustable parameters that affect the generation of the b
 
 -   [Vite](https://vitejs.dev/) with [`react-ts`](https://vite.new/react-ts)
 -   [Tailwind CSS](https://tailwindcss.com/)
+-   [Next UI](https://nextui.org/docs/guide/introduction)
 -   [`@react-three/fiber`](https://github.com/pmndrs/react-three-fiber/tree/master)
 -   [`@react-three/drei`](https://github.com/pmndrs/drei)
 -   [`@react-three/csg`](https://github.com/pmndrs/react-three-csg)
