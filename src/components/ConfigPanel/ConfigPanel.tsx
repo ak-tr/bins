@@ -51,7 +51,6 @@ const ConfigPanel = ({ isExporting, exportBins }: Props) => {
             value: width,
             maxValue: 1200,
             minValue: 60,
-            showCm: true,
             rawValue: false,
             inputValue: useState(width),
             updateFunc: updateBoxSettings,
@@ -61,7 +60,6 @@ const ConfigPanel = ({ isExporting, exportBins }: Props) => {
             value: height,
             maxValue: 450,
             minValue: 35,
-            showCm: true,
             rawValue: false,
             inputValue: useState(height),
             updateFunc: updateBoxSettings,
@@ -71,7 +69,6 @@ const ConfigPanel = ({ isExporting, exportBins }: Props) => {
             value: depth,
             maxValue: 850,
             minValue: 100,
-            showCm: true,
             rawValue: false,
             inputValue: useState(depth),
             updateFunc: updateBoxSettings,
@@ -84,7 +81,6 @@ const ConfigPanel = ({ isExporting, exportBins }: Props) => {
             value: radius,
             maxValue: 150,
             minValue: 5,
-            showCm: false,
             rawValue: false,
             inputValue: useState(radius),
             updateFunc: updateBinSettings,
@@ -94,7 +90,6 @@ const ConfigPanel = ({ isExporting, exportBins }: Props) => {
             value: thickness,
             maxValue: 20,
             minValue: 2,
-            showCm: false,
             rawValue: false,
             inputValue: useState(thickness),
             updateFunc: updateBinSettings,
@@ -246,6 +241,7 @@ const ConfigPanel = ({ isExporting, exportBins }: Props) => {
                                 }
                             }}
                         />
+                        {!sliderSettings.rawValue && "mm"}
                     </output>
                 )}
             />
