@@ -5,8 +5,7 @@ Bins is a 3D printable procedural bin generator where the user can provide width
 I was originally inspired to create this project when I saw the ["dojo-recursive-bins"](https://github.com/node-dojo/dojo-recursive-bins/) implementation leveraging Blender's Geometry Nodes. You can learn more about that [here](https://nodedojo.gumroad.com/l/dojobin?layout=profile).
 
 ## Demo
-
-![](https://github.com/ak-tr/bins/assets/62529128/a9e736de-aa7c-4acb-81e7-b61512493599)
+![Recording showing demo of bins project](https://github.com/ak-tr/bins/assets/62529128/a2c87ad5-b81f-458e-8c2e-73be30e90733)
 
 Feel free to play around with it at [bins.akif.kr](https://bins.akif.kr).
 
@@ -27,7 +26,8 @@ Currently there are 10 adjustable parameters that affect the generation of the b
 
 ## Current Bugs/Known Issues
 
--   Generated .obj files have a large amount of open edges as warned by PrusaSlicer. Tested with Cura and PrusaSlicer and this doesn't affect its printability but can be quite annoying. Cannot generate .stl files at all, they are very buggy using `STLExporter`.
+-   Generated .obj files have a large amount of open edges as warned by PrusaSlicer. Tested with Cura and PrusaSlicer and this doesn't affect its printability but can be quite annoying.
+-   Cannot generate .stl files at all, they are very buggy using `STLExporter`. Currently not implemented, may look into it in the future. Currently .obj files work well enough to make this project work.
 
 ## Roadmap
 
