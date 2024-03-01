@@ -5,7 +5,7 @@ import { ThreeApp } from "@components/ThreeApp";
 import { ConfigPanel } from "@components/ConfigPanel";
 
 // React imports
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 
 // Three or related imports
 import { Mesh } from "three";
@@ -58,17 +58,19 @@ function App() {
         setIsExporting(false);
     };
 
-    const AllSettingsProviders = ({ children }: ContextProviderProps) => (
-        <DrawerSettingsContextProvider>
-            <BinSettingsContextProvider>
-                <PrinterSettingsContextProvider>
-                    <PageSettingsContextProvider>
-                        {children}
-                    </PageSettingsContextProvider>
-                </PrinterSettingsContextProvider>
-            </BinSettingsContextProvider>
-        </DrawerSettingsContextProvider>
-    );
+    const AllSettingsProviders = useMemo(() => {
+        return ({ children }: ContextProviderProps) => (
+            <DrawerSettingsContextProvider>
+                <BinSettingsContextProvider>
+                    <PrinterSettingsContextProvider>
+                        <PageSettingsContextProvider>
+                            {children}
+                        </PageSettingsContextProvider>
+                    </PrinterSettingsContextProvider>
+                </BinSettingsContextProvider>
+            </DrawerSettingsContextProvider>
+        )
+    }, [])
 
     return (
         <div className="bg-neutral-900 text-white grid md:grid-cols-[minmax(800px,_1fr)_400px] h-lvh">
