@@ -15,6 +15,7 @@ import { useBinContext } from "context/BinSettingsContext";
 import { useDrawerContext } from "context/DrawerSettingsContext";
 import { usePageContext } from "context/PageSettingsContext";
 import { usePrinterContext } from "context/PrinterSettingsContext";
+import { useState } from "react";
 
 type Props = ExtraProps & {
     exportBins: () => void;
@@ -51,6 +52,7 @@ const ConfigPanel = ({ isExporting, exportBins }: Props) => {
             minValue: 60,
             showCm: true,
             rawValue: false,
+            inputValue: useState(width),
             updateFunc: updateBoxSettings,
         },
         {
@@ -60,6 +62,7 @@ const ConfigPanel = ({ isExporting, exportBins }: Props) => {
             minValue: 35,
             showCm: true,
             rawValue: false,
+            inputValue: useState(height),
             updateFunc: updateBoxSettings,
         },
         {
@@ -69,6 +72,7 @@ const ConfigPanel = ({ isExporting, exportBins }: Props) => {
             minValue: 100,
             showCm: true,
             rawValue: false,
+            inputValue: useState(depth),
             updateFunc: updateBoxSettings,
         },
     ];
@@ -81,6 +85,7 @@ const ConfigPanel = ({ isExporting, exportBins }: Props) => {
             minValue: 5,
             showCm: false,
             rawValue: false,
+            inputValue: useState(radius),
             updateFunc: updateBinSettings,
         },
         {
@@ -90,6 +95,7 @@ const ConfigPanel = ({ isExporting, exportBins }: Props) => {
             minValue: 2,
             showCm: false,
             rawValue: false,
+            inputValue: useState(thickness),
             updateFunc: updateBinSettings,
         },
         {
@@ -100,6 +106,7 @@ const ConfigPanel = ({ isExporting, exportBins }: Props) => {
             minValue: 0.1,
             rawValue: true,
             step: 0.01,
+            inputValue: useState(divideWidth),
             updateFunc: updateBinSettings,
         },
         {
@@ -110,6 +117,7 @@ const ConfigPanel = ({ isExporting, exportBins }: Props) => {
             minValue: 0.1,
             rawValue: true,
             step: 0.01,
+            inputValue: useState(divideDepth),
             updateFunc: updateBinSettings,
         },
         {
@@ -119,6 +127,7 @@ const ConfigPanel = ({ isExporting, exportBins }: Props) => {
             maxValue: 20,
             minValue: 0,
             step: 0.1,
+            inputValue: useState(outerGap),
             updateFunc: updateBinSettings,
         },
         {
@@ -128,6 +137,7 @@ const ConfigPanel = ({ isExporting, exportBins }: Props) => {
             maxValue: 20,
             minValue: 0,
             step: 0.1,
+            inputValue: useState(innerGap),
             updateFunc: updateBinSettings,
         },
         {
@@ -137,6 +147,7 @@ const ConfigPanel = ({ isExporting, exportBins }: Props) => {
             minValue: 0,
             rawValue: true,
             step: 1,
+            inputValue: useState(iterations),
             updateFunc: updateBinSettings,
         },
     ];
@@ -157,6 +168,10 @@ const ConfigPanel = ({ isExporting, exportBins }: Props) => {
     ];
 
     const sliderComponent = (sliderSettings: any) => {
+        if (!sliderSettings.inputValue) return;
+
+        const [inputValue, setInputVaue] = sliderSettings.inputValue;
+
         return (
             <Slider
                 key={sliderSettings.label}
@@ -172,22 +187,60 @@ const ConfigPanel = ({ isExporting, exportBins }: Props) => {
                     filler: "bg-white",
                     track: "rounded bg-black cursor-ew-resize",
                     labelWrapper:
-                        "relative top-5 h-0 px-2 z-50 mix-blend-difference pointer-events-none",
+                        "relative top-5 h-0 px-2 z-50 mix-blend-difference",
                     value: "text-md",
-                    label: "text-md",
+                    label: "text-md pointer-events-none",
                 }}
                 hideThumb={true}
-                onChange={(value: SliderValue) =>
+                onChange={(value: SliderValue) => {
+                    setInputVaue(value);
                     sliderSettings.updateFunc({
                         [sliderSettings.variableName ||
                         sliderSettings.label.toLowerCase()]: value,
-                    })
-                }
+                    });
+                }}
                 getValue={(value: SliderValue) =>
                     sliderSettings.rawValue
                         ? value.toString()
                         : `${value as number}mm`
                 }
+                renderValue={({ children, ...props }) => (
+                    <output {...props}>
+                        <input
+                            className="w-12 text-right text-md text-white font-medium bg-transparent outline-none transition-colors border-transparent"
+                            type="text"
+                            value={inputValue}
+                            onChange={(
+                                e: React.ChangeEvent<HTMLInputElement>
+                            ) => {
+                                const v = e.target.value;
+                                setInputVaue(v);
+                            }}
+                            onKeyDown={(
+                                e: React.KeyboardEvent<HTMLInputElement>
+                            ) => {
+                                const isEnterKey = e.key === "Enter";
+                                const isNumber = !isNaN(Number(inputValue));
+
+                                if (isEnterKey && isNumber) {
+                                    const finalValue = !inputValue
+                                        ? sliderSettings.minValue
+                                        : inputValue < sliderSettings.minValue
+                                        ? sliderSettings.minValue
+                                        : inputValue > sliderSettings.maxValue
+                                        ? sliderSettings.maxValue
+                                        : inputValue;
+                                    setInputVaue(finalValue);
+                                    sliderSettings.updateFunc({
+                                        [sliderSettings.variableName ||
+                                        sliderSettings.label.toLowerCase()]:
+                                            Number(finalValue),
+                                    });
+                                }
+                            }}
+                        />
+                    </output>
+                )}
             />
         );
     };
