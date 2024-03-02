@@ -26,6 +26,7 @@ const Bin = forwardRef(
         ref: ForwardedRef<Mesh>
     ) => {
         const { areIndexNumbersEnabled } = usePageContext() as PageContext;
+        const bottomLayerThickness = 1;
 
         const roundedEdgedRect = RoundedEdgedRectGeometry(
             width,
@@ -35,7 +36,7 @@ const Bin = forwardRef(
         );
         const roundedEdgedRectInner = RoundedEdgedRectGeometry(
             width - thickness * 2,
-            height - 5,
+            height,
             depth - thickness * 2,
             radius
         );
@@ -52,7 +53,7 @@ const Bin = forwardRef(
         roundedEdgedRectBrush.updateMatrixWorld();
 
         const roundedEdgedRectInnerBrush = new Brush(roundedEdgedRectInner);
-        roundedEdgedRectInnerBrush.position.y = 5;
+        roundedEdgedRectInnerBrush.position.y = bottomLayerThickness;
         roundedEdgedRectInnerBrush.updateMatrixWorld();
 
         const evaluator = new Evaluator();
@@ -63,7 +64,7 @@ const Bin = forwardRef(
         );
 
         return (
-            <group position={[width / 2, 0, depth / 2]}>
+            <group position={[width / 2, 10, depth / 2]}>
                 {areIndexNumbersEnabled && <IndexNumber
                     position={[index + 1 > 9 ? -11 : -6, height / 2 + 2, 7]}
                     value={(index + 1).toString()}

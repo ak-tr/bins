@@ -7,10 +7,10 @@ const Drawer = ({ width, height, depth }: DrawerSettings) => {
             <meshStandardMaterial color="lightgrey" />
             <Geometry>
                 <Base>
-                    <boxGeometry args={[width + 20, height + 10, depth + 20]} />
+                    <boxGeometry args={[width + 20, height + 20, depth + 20]} />
                 </Base>
-                <Subtraction position={[0, 5, 0]}>
-                    <boxGeometry args={[width, height, depth]} />
+                <Subtraction position={[0, 2, 0]}>
+                    <boxGeometry args={[width, height + 20, depth]} />
                 </Subtraction>
             </Geometry>
         </mesh>
