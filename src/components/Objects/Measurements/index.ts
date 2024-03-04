@@ -1,1 +1,1 @@
-export { default as Measurements } from "./Measurements";
+export { Measurements } from "./Measurements";

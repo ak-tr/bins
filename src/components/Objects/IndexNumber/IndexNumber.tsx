@@ -13,7 +13,7 @@ extend({ TextGeometry });
 
 type Props = { position: Vector3, value: string }
 
-const IndexNumber = ({ position, value }: Props) => {
+export const IndexNumber = ({ position, value }: Props) => {
     const font = new FontLoader().parse(spaceMonoFont as unknown as FontData);
 
     return (
@@ -30,5 +30,3 @@ const IndexNumber = ({ position, value }: Props) => {
         </mesh>
     );
 }
-
-export default IndexNumber

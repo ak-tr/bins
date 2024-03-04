@@ -1,7 +1,7 @@
 import { Subtraction, Geometry, Base } from "@react-three/csg";
 import { Box } from "@react-three/drei";
 
-const Drawer = ({ width, height, depth }: DrawerSettings) => {
+export const Drawer = ({ width, height, depth }: DrawerSettings) => {
     const drawerBase = (
         <mesh>
             <meshStandardMaterial color="lightgrey" />
@@ -26,5 +26,3 @@ const Drawer = ({ width, height, depth }: DrawerSettings) => {
 
     return drawer
 }
-
-export default Drawer;

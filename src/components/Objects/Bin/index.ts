@@ -1,1 +1,1 @@
-export { default as Bin } from "./Bin";
+export { Bin } from "./Bin";

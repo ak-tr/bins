@@ -1,1 +1,1 @@
-export { default as IndexNumber } from "./IndexNumber";
+export { IndexNumber } from "./IndexNumber";

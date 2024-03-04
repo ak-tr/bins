@@ -17,7 +17,7 @@ import { PrinterSettingsContextProvider } from "context/PrinterSettingsContext";
 import { PageSettingsContextProvider } from "context/PageSettingsContext";
 
 import { NextUIProvider } from "@nextui-org/react";
-import { exportMeshesToObj } from "@utils/exporter";
+import { exportMeshesToObj } from "@utils/exportMeshesToObj";
 
 function App() {
     const [isExporting, setIsExporting] = useState(false);

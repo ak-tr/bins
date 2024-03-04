@@ -10,7 +10,7 @@ import { SUBTRACTION, Brush, Evaluator } from "three-bvh-csg";
 import { IndexNumber } from "@components/Objects/IndexNumber";
 import { usePageContext } from "context/PageSettingsContext";
 
-const Bin = forwardRef(
+export const Bin = forwardRef(
     (
         {
             width,
@@ -25,8 +25,8 @@ const Bin = forwardRef(
         }: BinValues & { isVaseMode: boolean, index: number },
         ref: ForwardedRef<Mesh>
     ) => {
-        const { areIndexNumbersEnabled } = usePageContext() as PageContext;
         const bottomLayerThickness = 1;
+        const { areIndexNumbersEnabled } = usePageContext();
 
         const roundedEdgedRect = RoundedEdgedRectGeometry(
             width,
@@ -84,5 +84,3 @@ const Bin = forwardRef(
         );
     }
 );
-
-export default Bin;

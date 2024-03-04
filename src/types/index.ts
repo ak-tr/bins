@@ -1,3 +1,15 @@
+type Bin = {
+    width: number;
+    depth: number;
+    height: number;
+    x: number;
+    y: number;
+    z: number;
+    radius: number;
+    thickness: number;
+    shouldRender: boolean;
+};
+
 type ConfigurationValues = {
     width: number;
     height: number;

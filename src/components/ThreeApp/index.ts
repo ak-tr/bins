@@ -1,1 +1,1 @@
-export { default as ThreeApp } from "./ThreeApp";
+export { ThreeApp } from "./ThreeApp";

@@ -1,15 +1,3 @@
-interface Bin {
-    width: number;
-    depth: number;
-    height: number;
-    x: number;
-    y: number;
-    z: number;
-    radius: number;
-    thickness: number;
-    shouldRender: boolean;
-}
-
 export const generateBins = (
     width: number,
     depth: number,

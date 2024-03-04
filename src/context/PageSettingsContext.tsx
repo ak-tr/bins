@@ -1,12 +1,11 @@
 import { createContext, useContext, useState } from "react";
 import { DEFAULT_PAGE_SETTINGS } from "constants";
 
-const { areMeasurementsEnabled, areIndexNumbersEnabled, isVaseMode } = DEFAULT_PAGE_SETTINGS;
-const defaultValue = { areMeasurementsEnabled, areIndexNumbersEnabled, isVaseMode };
-
-const PageSettingsContext = createContext<PageContext | undefined>(undefined);
+const PageSettingsContext = createContext<PageContext | null>(null);
 
 export const PageSettingsContextProvider = ({ children }: ContextProviderProps) => {
+    const { areMeasurementsEnabled, areIndexNumbersEnabled, isVaseMode } = DEFAULT_PAGE_SETTINGS;
+const defaultValue = { areMeasurementsEnabled, areIndexNumbersEnabled, isVaseMode };
     const [pageSettings, setPageSettings] = useState(defaultValue);
 
     const updatePageSettings = (newValues: Partial<PageSettings>) => {
@@ -24,5 +23,9 @@ export const PageSettingsContextProvider = ({ children }: ContextProviderProps) 
 };
 
 export const usePageContext = () => {
-    return useContext(PageSettingsContext);
+    const context = useContext(PageSettingsContext);
+    if (!context) {
+        throw new Error("usePageContext must be used within a PageSettingsContextProvider");
+    }
+    return context;
 };

@@ -1,12 +1,14 @@
-import { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 import { DEFAULT_VALUES } from "constants";
 
-const { radius, thickness, divideWidth, divideDepth, outerGap, innerGap, iterations } = DEFAULT_VALUES;
-const defaultValue = { radius, thickness, divideWidth, divideDepth, outerGap, innerGap, iterations };
+// Create the context
+const BinSettingsContext = createContext<BinContext | null>(null);
 
-const BinSettingsContext = createContext<BinContext | undefined>(undefined);
+// Define the context provider
+export const BinSettingsContextProvider: React.FC<ContextProviderProps> = ({ children }) => {
+    const { radius, thickness, divideWidth, divideDepth, outerGap, innerGap, iterations } = DEFAULT_VALUES;
+    const defaultValue = { radius, thickness, divideWidth, divideDepth, outerGap, innerGap, iterations };
 
-export const BinSettingsContextProvider = ({ children }: ContextProviderProps) => {
     const [binSettings, setBinSettings] = useState(defaultValue);
 
     const updateBinSettings = (newValues: Partial<BinSettings>) => {
@@ -17,12 +19,17 @@ export const BinSettingsContextProvider = ({ children }: ContextProviderProps) =
     };
 
     return (
-        <BinSettingsContext.Provider value={{...binSettings, updateBinSettings}}>
+        <BinSettingsContext.Provider value={{ ...binSettings, updateBinSettings }}>
             {children}
         </BinSettingsContext.Provider>
     );
 };
 
+// Custom hook to access the context
 export const useBinContext = () => {
-    return useContext(BinSettingsContext);
+    const context = useContext(BinSettingsContext);
+    if (!context) {
+        throw new Error("useBinContext must be used within a BinSettingsContextProvider");
+    }
+    return context;
 };

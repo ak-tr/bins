@@ -21,9 +21,9 @@ type Props = ExtraProps & {
     exportBins: () => void;
 };
 
-const ConfigPanel = ({ isExporting, exportBins }: Props) => {
+export const ConfigPanel = ({ isExporting, exportBins }: Props) => {
     const { width, height, depth, updateBoxSettings } =
-        useDrawerContext() as DrawerContext;
+        useDrawerContext();
     const {
         radius,
         thickness,
@@ -33,15 +33,15 @@ const ConfigPanel = ({ isExporting, exportBins }: Props) => {
         innerGap,
         iterations,
         updateBinSettings,
-    } = useBinContext() as BinContext;
+    } = useBinContext();
     const { bedSizeX, bedSizeY, updatePrinterSettings } =
-        usePrinterContext() as PrinterContext;
+        usePrinterContext();
     const {
         areMeasurementsEnabled,
         areIndexNumbersEnabled,
         isVaseMode,
         updatePageSettings,
-    } = usePageContext() as PageContext;
+    } = usePageContext();
 
     const size = "lg";
 
@@ -387,5 +387,3 @@ const ConfigPanel = ({ isExporting, exportBins }: Props) => {
         </div>
     );
 };
-
-export default ConfigPanel;

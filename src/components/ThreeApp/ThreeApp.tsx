@@ -3,7 +3,7 @@ import { Canvas } from "@react-three/fiber";
 import { PerspectiveCamera, PresentationControls } from "@react-three/drei";
 
 // Utilities
-import { generateBins } from "@utils/generator";
+import { generateBins } from "@utils/generateBins";
 
 // Components
 import { Drawer } from "@components/Objects/Drawer";
@@ -21,8 +21,8 @@ type Props = {
     updateBinMeshArray: (refs: any[]) => void;
 };
 
-const ThreeApp = ({ updateBinMeshArray }: Props) => {
-    const { width, height, depth } = useDrawerContext() as DrawerContext;
+export const ThreeApp = ({ updateBinMeshArray }: Props) => {
+    const { width, height, depth } = useDrawerContext();
     const {
         radius,
         thickness,
@@ -31,9 +31,9 @@ const ThreeApp = ({ updateBinMeshArray }: Props) => {
         outerGap,
         innerGap,
         iterations,
-    } = useBinContext() as BinContext;
-    const { bedSizeX, bedSizeY } = usePrinterContext() as PrinterContext;
-    const { areMeasurementsEnabled, isVaseMode } = usePageContext() as PageContext;
+    } = useBinContext();
+    const { bedSizeX, bedSizeY } = usePrinterContext();
+    const { areMeasurementsEnabled, isVaseMode } = usePageContext();
 
     const binRefs = useRef([]);
 
@@ -151,5 +151,3 @@ const ThreeApp = ({ updateBinMeshArray }: Props) => {
         </Canvas>
     );
 };
-
-export default ThreeApp;

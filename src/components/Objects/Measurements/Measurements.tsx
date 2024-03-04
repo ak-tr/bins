@@ -11,7 +11,7 @@ declare module "@react-three/fiber" {
 }
 extend({ TextGeometry });
 
-const Measurements = ({ width, height, depth }: DrawerSettings) => {
+export const Measurements = ({ width, height, depth }: DrawerSettings) => {
     const font = new FontLoader().parse(spaceMonoFont as unknown as FontData);
 
     const measurements = [
@@ -48,5 +48,3 @@ const Measurements = ({ width, height, depth }: DrawerSettings) => {
 
     return measurements;
 };
-
-export default Measurements;

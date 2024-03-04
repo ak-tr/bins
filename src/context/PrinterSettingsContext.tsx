@@ -24,5 +24,9 @@ export const PrinterSettingsContextProvider = ({ children }: ContextProviderProp
 };
 
 export const usePrinterContext = () => {
-    return useContext(PrinterSettingsContext);
+    const context = useContext(PrinterSettingsContext);
+    if (!context) {
+        throw new Error("usePrinterContext must be used within a DrawerSettingsContextProvider");
+    }
+    return context;
 };
