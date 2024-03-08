@@ -15,13 +15,14 @@ import { useBinContext } from "context/BinSettingsContext";
 import { useDrawerContext } from "context/DrawerSettingsContext";
 import { usePageContext } from "context/PageSettingsContext";
 import { usePrinterContext } from "context/PrinterSettingsContext";
-import { useState } from "react";
+import { MutableRefObject, useState } from "react";
 
-type Props = ExtraProps & {
-    exportBins: () => void;
-};
+import { exportMeshesToObj } from "@utils/exportMeshesToObj";
+import { Mesh } from "three";
 
-export const ConfigPanel = ({ isExporting, exportBins }: Props) => {
+type Props = { binMeshArray: MutableRefObject<Mesh[]> }
+
+export const ConfigPanel = ({ binMeshArray }: Props) => {
     const { width, height, depth, updateBoxSettings } =
         useDrawerContext();
     const {
@@ -42,6 +43,20 @@ export const ConfigPanel = ({ isExporting, exportBins }: Props) => {
         isVaseMode,
         updatePageSettings,
     } = usePageContext();
+    const [isExporting, setIsExporting] = useState(false);
+
+    const exportBins = async () => {
+        setIsExporting(true);
+
+        try {
+            await exportMeshesToObj(binMeshArray);
+        } catch (err) {
+            console.log("Error exporting bins");
+            console.log(err);
+        } finally {
+            setIsExporting(false);
+        }
+    };
 
     const size = "lg";
 
