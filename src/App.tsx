@@ -5,7 +5,7 @@ import { ThreeApp } from "@components/ThreeApp";
 import { ConfigPanel } from "@components/ConfigPanel";
 
 // React imports
-import { useMemo, useRef } from "react";
+import { useRef } from "react";
 
 // Three or related imports
 import { Mesh } from "three";
