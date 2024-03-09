@@ -20,7 +20,6 @@ type ConfigurationValues = {
     divideDepth: number;
     outerGap: number;
     innerGap: number;
-    iterations: number;
     bedSizeX: number;
     bedSizeY: number;
 };
@@ -37,11 +36,15 @@ type PrinterContext = PrinterSettings & {
 
 type BinSettings = Omit<
     ConfigurationValues,
-    keyof DrawerSettings | keyof PrinterSettings
+    keyof DrawerSettings | keyof PrinterSettings | keyof GenerationSettings
 >;
 type BinContext = BinSettings & {
     updateBinSettings: (newValues: Partial<BinSettings>) => void;
 };
+
+type BaseBinValues = DrawerSettings &
+    Omit<BinSettings, "outerGap"> &
+    Partial<Omit<GenerationSettings, "type">>;
 
 type PageSettings = {
     areMeasurementsEnabled: boolean;
@@ -50,6 +53,17 @@ type PageSettings = {
 };
 type PageContext = PageSettings & {
     updatePageSettings: (newValues: Partial<PageSettings>) => void;
+};
+
+type GenerationType = "Recursive" | "Grid";
+type GenerationSettings = {
+    type: GenerationType;
+    iterations: number;
+    rows: number;
+    cols: number;
+};
+type GenerationContext = GenerationSettings & {
+    updateGenerationSettings: (newValues: Partial<GenerationSettings>) => void;
 };
 
 type ContextProviderProps = { children?: import("react").ReactNode };
