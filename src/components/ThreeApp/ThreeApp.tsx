@@ -3,7 +3,8 @@ import { Canvas } from "@react-three/fiber";
 import { PerspectiveCamera, PresentationControls } from "@react-three/drei";
 
 // Utilities
-import { generateBins } from "@utils/generateBins";
+import { generateBinsRecursive } from "@utils/generators/generateBinsRecursive";
+import { generateBinsGrid } from "@utils/generators/generateBinsGrid";
 
 // Components
 import { Drawer } from "@components/Objects/Drawer";
@@ -16,6 +17,7 @@ import { useDrawerContext } from "context/DrawerSettingsContext";
 import { useBinContext } from "context/BinSettingsContext";
 import { usePrinterContext } from "context/PrinterSettingsContext";
 import { usePageContext } from "context/PageSettingsContext";
+import { useGenerationContext } from "context/GenerationSettingsContext";
 
 type Props = {
     updateBinMeshArray: (refs: any[]) => void;
@@ -23,32 +25,37 @@ type Props = {
 
 export const ThreeApp = ({ updateBinMeshArray }: Props) => {
     const { width, height, depth } = useDrawerContext();
-    const {
-        radius,
-        thickness,
-        divideWidth,
-        divideDepth,
-        outerGap,
-        innerGap,
-        iterations,
-    } = useBinContext();
+    const { radius, thickness, divideWidth, divideDepth, outerGap, innerGap } =
+        useBinContext();
+    const { type, iterations, rows, cols } = useGenerationContext();
     const { bedSizeX, bedSizeY } = usePrinterContext();
     const { areMeasurementsEnabled, isVaseMode } = usePageContext();
 
     const binRefs = useRef([]);
 
     const groupedBins = useMemo(() => {
-        const bins = generateBins(
-            width - outerGap * 2,
-            depth - outerGap * 2,
+        let props: BaseBinValues = {
+            width: width - outerGap * 2,
+            depth: depth - outerGap * 2,
             height,
             divideWidth,
             divideDepth,
-            iterations,
             radius,
             thickness,
-            innerGap
-        );
+            innerGap,
+        };
+
+        if (type === "Recursive") {
+            props.iterations = iterations;
+        } else {
+            props.rows = rows;
+            props.cols = cols;
+        }
+
+        const bins =
+            type === "Recursive"
+                ? generateBinsRecursive(props)
+                : generateBinsGrid(props);
 
         binRefs.current = bins.map(
             (_, index) => binRefs.current[index] ?? createRef()
@@ -88,12 +95,13 @@ export const ThreeApp = ({ updateBinMeshArray }: Props) => {
         iterations,
         bedSizeX,
         bedSizeY,
+        type,
+        rows,
+        cols,
     ]);
 
     const allBins = (
-        <group
-            position={[-width / 2 + outerGap, 0, -depth / 2 + outerGap]}
-        >
+        <group position={[-width / 2 + outerGap, 0, -depth / 2 + outerGap]}>
             {...groupedBins}
         </group>
     );
