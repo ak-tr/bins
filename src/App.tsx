@@ -17,6 +17,7 @@ import { PrinterSettingsContextProvider } from "context/PrinterSettingsContext";
 import { PageSettingsContextProvider } from "context/PageSettingsContext";
 
 import { NextUIProvider } from "@nextui-org/react";
+import { GenerationSettingsContextProvider } from "context/GenerationSettingsContext";
 
 function App() {
     const binMeshArray = useRef<Mesh[]>([]);
@@ -30,11 +31,13 @@ function App() {
     const AllSettingsProviders = ({ children }: ContextProviderProps) => (
         <DrawerSettingsContextProvider>
             <BinSettingsContextProvider>
-                <PrinterSettingsContextProvider>
-                    <PageSettingsContextProvider>
-                        {children}
-                    </PageSettingsContextProvider>
-                </PrinterSettingsContextProvider>
+                <GenerationSettingsContextProvider>
+                    <PrinterSettingsContextProvider>
+                        <PageSettingsContextProvider>
+                            {children}
+                        </PageSettingsContextProvider>
+                    </PrinterSettingsContextProvider>
+                </GenerationSettingsContextProvider>
             </BinSettingsContextProvider>
         </DrawerSettingsContextProvider>
     );
