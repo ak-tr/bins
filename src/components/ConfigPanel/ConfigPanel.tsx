@@ -8,6 +8,8 @@ import {
     Accordion,
     AccordionItem,
     Checkbox,
+    Select,
+    SelectItem,
 } from "@nextui-org/react";
 
 // Contexts
@@ -19,12 +21,13 @@ import { MutableRefObject, useState } from "react";
 
 import { exportMeshesToObj } from "@utils/exportMeshesToObj";
 import { Mesh } from "three";
+import { useGenerationContext } from "context/GenerationSettingsContext";
+import { GENERATION_TYPES } from "constants";
 
-type Props = { binMeshArray: MutableRefObject<Mesh[]> }
+type Props = { binMeshArray: MutableRefObject<Mesh[]> };
 
 export const ConfigPanel = ({ binMeshArray }: Props) => {
-    const { width, height, depth, updateBoxSettings } =
-        useDrawerContext();
+    const { width, height, depth, updateBoxSettings } = useDrawerContext();
     const {
         radius,
         thickness,
@@ -32,17 +35,17 @@ export const ConfigPanel = ({ binMeshArray }: Props) => {
         divideDepth,
         outerGap,
         innerGap,
-        iterations,
         updateBinSettings,
     } = useBinContext();
-    const { bedSizeX, bedSizeY, updatePrinterSettings } =
-        usePrinterContext();
+    const { bedSizeX, bedSizeY, updatePrinterSettings } = usePrinterContext();
     const {
         areMeasurementsEnabled,
         areIndexNumbersEnabled,
         isVaseMode,
         updatePageSettings,
     } = usePageContext();
+    const { type, iterations, rows, cols, updateGenerationSettings } =
+        useGenerationContext();
     const [isExporting, setIsExporting] = useState(false);
 
     const exportBins = async () => {
@@ -119,6 +122,7 @@ export const ConfigPanel = ({ binMeshArray }: Props) => {
             step: 0.01,
             inputValue: useState(divideWidth),
             updateFunc: updateBinSettings,
+            hidden: type === "Grid",
         },
         {
             label: "Depth Division",
@@ -130,6 +134,7 @@ export const ConfigPanel = ({ binMeshArray }: Props) => {
             step: 0.01,
             inputValue: useState(divideDepth),
             updateFunc: updateBinSettings,
+            hidden: type === "Grid",
         },
         {
             label: "Outer Gap",
@@ -151,6 +156,9 @@ export const ConfigPanel = ({ binMeshArray }: Props) => {
             inputValue: useState(innerGap),
             updateFunc: updateBinSettings,
         },
+    ];
+
+    const generationSlidersRecursive = [
         {
             label: "Iterations",
             value: iterations,
@@ -159,9 +167,38 @@ export const ConfigPanel = ({ binMeshArray }: Props) => {
             rawValue: true,
             step: 1,
             inputValue: useState(iterations),
-            updateFunc: updateBinSettings,
+            updateFunc: updateGenerationSettings,
         },
     ];
+
+    const generationSlidersGrid = [
+        {
+            label: "Rows",
+            value: rows,
+            maxValue: 10,
+            minValue: 1,
+            rawValue: true,
+            step: 1,
+            inputValue: useState(rows),
+            updateFunc: updateGenerationSettings,
+        },
+        {
+            label: "Columns",
+            variableName: "cols",
+            value: cols,
+            maxValue: 10,
+            minValue: 1,
+            rawValue: true,
+            step: 1,
+            inputValue: useState(cols),
+            updateFunc: updateGenerationSettings,
+        },
+    ];
+
+    const generationSliders =
+        type === "Recursive"
+            ? generationSlidersRecursive
+            : generationSlidersGrid;
 
     const checkboxes = [
         {
@@ -272,7 +309,7 @@ export const ConfigPanel = ({ binMeshArray }: Props) => {
             </div>
             <Accordion
                 selectionMode="multiple"
-                defaultExpandedKeys={["1", "2"]}
+                defaultExpandedKeys={["1", "2", "3"]}
                 isCompact={true}
             >
                 <AccordionItem
@@ -292,13 +329,45 @@ export const ConfigPanel = ({ binMeshArray }: Props) => {
                     classNames={{ title: "!text-white font-bold" }}
                 >
                     <div className="flex flex-col gap-2">
-                        {binSettingsSliders.map((slider) => {
+                        {binSettingsSliders.filter((slider) => !slider.hidden).map((slider) => {
                             return sliderComponent(slider);
                         })}
                     </div>
                 </AccordionItem>
                 <AccordionItem
                     key="3"
+                    title="Generation Settings"
+                    classNames={{ title: "!text-white font-bold" }}
+                >
+                    <div className="flex flex-col gap-2">
+                        <span>Generation Type</span>
+                        <Select
+                            label="Generation Type"
+                            labelPlacement="outside-left"
+                            placeholder="Select a generation type"
+                            defaultSelectedKeys={[type]}
+                            classNames={{ label: "hidden" }}
+                            onChange={(
+                                event: React.ChangeEvent<HTMLSelectElement>
+                            ) => {
+                                updateGenerationSettings({
+                                    type: event.target.value as GenerationType,
+                                });
+                            }}
+                        >
+                            {GENERATION_TYPES.map((type) => (
+                                <SelectItem key={type} value={type}>
+                                    {type}
+                                </SelectItem>
+                            ))}
+                        </Select>
+                        {generationSliders.map((slider) => {
+                            return sliderComponent(slider);
+                        })}
+                    </div>
+                </AccordionItem>
+                <AccordionItem
+                    key="4"
                     title="Printer Settings"
                     classNames={{ title: "!text-white font-bold" }}
                 >
@@ -344,7 +413,7 @@ export const ConfigPanel = ({ binMeshArray }: Props) => {
                     </div>
                 </AccordionItem>
                 <AccordionItem
-                    key="4"
+                    key="5"
                     title="Page Settings"
                     classNames={{ title: "!text-white font-bold" }}
                 >
