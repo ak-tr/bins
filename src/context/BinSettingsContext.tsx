@@ -6,8 +6,8 @@ const BinSettingsContext = createContext<BinContext | null>(null);
 
 // Define the context provider
 export const BinSettingsContextProvider: React.FC<ContextProviderProps> = ({ children }) => {
-    const { radius, thickness, divideWidth, divideDepth, outerGap, innerGap, iterations } = DEFAULT_VALUES;
-    const defaultValue = { radius, thickness, divideWidth, divideDepth, outerGap, innerGap, iterations };
+    const { radius, thickness, divideWidth, divideDepth, outerGap, innerGap } = DEFAULT_VALUES;
+    const defaultValue = { radius, thickness, divideWidth, divideDepth, outerGap, innerGap };
 
     const [binSettings, setBinSettings] = useState(defaultValue);
 
