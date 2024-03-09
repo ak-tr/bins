@@ -34,9 +34,25 @@ Adjusting these values will affect the generated bins inside the drawer.
 - Depth Division - Value between 0 and 1 used to calculate how to allocate space to the boxes in the Z dimension.
 - Outer Gap - Gap between all outer edges of the bins that meet with the inner drawer walls.
 - Inner Gap - Gap between walls on all bins which meet another bin.
-- Iterations - How many times to procedurally generate bins using the initial 4 bins.
+
+> [!NOTE]
+> Iterations used to be controlled through bin settings but they have now moved to generation settings with the new addition of "Grid" generation type.
 
 <img src="https://github.com/ak-tr/bins/assets/62529128/7c86ce82-af30-4868-aa2b-fc3d45f6c6ab" width="100%" />
+
+### Generation Settings
+
+Adjusting these settings will affect how the bins are generated
+
+- Generation type - this is currently a dropdown with values "Recursive" and "Grid". 
+    - Recursive - this is the default. It is the original method used to generate the bins.
+    - Grid - this is the new method upon popular request. This will pull two new sliders, rows and columns for you to generate a grid-like set of bins.
+
+Recursive             |  Grid
+:-------------------------:|:-------------------------:
+![image](https://github.com/ak-tr/bins/assets/62529128/ac017bde-0029-4696-b67e-9f5287845f87) | ![image](https://github.com/ak-tr/bins/assets/62529128/7ae92cdc-4414-47e6-a124-f0104a5217ea)
+![image](https://github.com/ak-tr/bins/assets/62529128/ad56cf1b-fdea-4747-836e-16304df27a2c)  |  ![image](https://github.com/ak-tr/bins/assets/62529128/8ed3e94b-ed2d-4203-bc22-62c9e18847e2)
+ 
 
 ### Page Settings
 
@@ -61,7 +77,7 @@ If you would like to print your bins in vase mode, simply check the "Export as '
 Once you have these files, drag them into your slicer and enable vase mode. This will differ from slicer to slicer.
 
 > [!NOTE]
-> If you are printing in vase mode with a standard 0.4mm nozzle (or any nozzle smaller than 0.8mm at standard wall thickness) or smaller, you are very likely going to experience major warping as the thin walled layers cool and contract quickly on top of each other. You are often able to comfortably print walls that are up to two times thicker than your nozzle diameter which for a 0.4mm nozzle can help drastically with the warping. I have found with my testing it is very usable with 0.8mm walls and using vase mode can reduce filament usage drastically.
+> If you are printing in vase mode with a standard 0.4mm nozzle (or any nozzle smaller than 0.8mm at standard wall thickness) or smaller, you are very likely going to experience major warping as the thin walled layers cool and contract quickly on top of each other. You are often able to comfortably print walls that are up to two times thicker than your nozzle diameter which for a 0.4mm nozzle can help drastically with the warping. I have found with my testing it is very usable with 0.8mm walls and using vase mode can reduce filament usage drastically. ["3D Printing Nerd" has a really good video](https://www.youtube.com/watch?v=0lEp3-sRIIE) that you should watch regarding this.
 
 ![](https://github.com/ak-tr/bins/assets/62529128/8b252647-d9f0-44e2-bf55-45f110ab84df)
 
@@ -80,7 +96,6 @@ Your slicer might show or warn you about open edges, these should be automatical
 
 ## Roadmap
 
-- Add different bin generation methods i.e. grid.
 - Add printer bed with layer visualisation like the implementation by [Node Dojo](https://github.com/node-dojo/dojo-recursive-bins/).
 - Add a different way to visualise the generated bins, maybe like a carousel(?), top down view or something of that sort.
 
