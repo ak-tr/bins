@@ -301,7 +301,7 @@ export const ConfigPanel = ({ binMeshArray }: Props) => {
     };
 
     return (
-        <div className="max-h-64 sm:h-full sm:max-h-full overflow-auto flex flex-col py-4 px-5 border-l-1 border-t-1 sm:border-t-0 border-neutral-800 antialiased bg-neutral-950 gap-2">
+        <div className="dark max-h-64 md:max-h-full md:h-screen overflow-auto flex flex-col py-4 px-5 border-l-1 border-t-1 sm:border-t-0 border-neutral-800 antialiased bg-neutral-950 gap-2">
             <div className="flex justify-between items-center">
                 <h1 className="text-xl font-bold tracking-wide">
                     Configuration
@@ -310,7 +310,6 @@ export const ConfigPanel = ({ binMeshArray }: Props) => {
             <Accordion
                 selectionMode="multiple"
                 defaultExpandedKeys={["1", "2", "3"]}
-                isCompact={true}
             >
                 <AccordionItem
                     key="1"
@@ -347,6 +346,9 @@ export const ConfigPanel = ({ binMeshArray }: Props) => {
                             placeholder="Select a generation type"
                             defaultSelectedKeys={[type]}
                             classNames={{ label: "hidden" }}
+                            size="sm"
+                            radius="sm"
+                            variant="faded"
                             onChange={(
                                 event: React.ChangeEvent<HTMLSelectElement>
                             ) => {
@@ -378,7 +380,7 @@ export const ConfigPanel = ({ binMeshArray }: Props) => {
                                 type="number"
                                 radius="sm"
                                 endContent={
-                                    <span className="font-bold text-black">
+                                    <span className="font-bold text-white">
                                         mm
                                     </span>
                                 }
@@ -396,7 +398,7 @@ export const ConfigPanel = ({ binMeshArray }: Props) => {
                                 type="number"
                                 radius="sm"
                                 endContent={
-                                    <span className="font-bold text-black">
+                                    <span className="font-bold">
                                         mm
                                     </span>
                                 }
@@ -444,7 +446,7 @@ export const ConfigPanel = ({ binMeshArray }: Props) => {
                 <Button
                     radius="sm"
                     size="lg"
-                    className="bg-white font-black w-full"
+                    className="w-full"
                     isLoading={isExporting}
                     onPress={exportBins}
                 >
