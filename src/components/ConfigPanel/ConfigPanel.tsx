@@ -1,58 +1,61 @@
-// UI Components
-import {
-    Slider,
-    SliderValue,
-    Link,
-    Button,
-    Input,
-    Accordion,
-    AccordionItem,
-    Checkbox,
-    Select,
-    SelectItem,
-} from "@nextui-org/react";
-
-// Contexts
-import { useBinContext } from "context/BinSettingsContext";
-import { useDrawerContext } from "context/DrawerSettingsContext";
-import { usePageContext } from "context/PageSettingsContext";
-import { usePrinterContext } from "context/PrinterSettingsContext";
-import { MutableRefObject, useState } from "react";
-
-import { exportMeshesToObj } from "@utils/exportMeshesToObj";
+import { MutableRefObject, ReactNode, RefObject, useState } from "react";
 import { Mesh } from "three";
-import { useGenerationContext } from "context/GenerationSettingsContext";
-import { GENERATION_TYPES } from "constants";
 
-type Props = { binMeshArray: MutableRefObject<Mesh[]> };
+import { useSettings } from "../../context/SettingsContext";
+import { exportMeshesToObj } from "../../utils/exportMeshesToObj";
+import { GENERATION_TYPES } from "../../constants";
 
-export const ConfigPanel = ({ binMeshArray }: Props) => {
-    const { width, height, depth, updateBoxSettings } = useDrawerContext();
-    const {
-        radius,
-        thickness,
-        divideWidth,
-        divideDepth,
-        outerGap,
-        innerGap,
-        updateBinSettings,
-    } = useBinContext();
-    const { bedSizeX, bedSizeY, updatePrinterSettings } = usePrinterContext();
-    const {
-        areMeasurementsEnabled,
-        areIndexNumbersEnabled,
-        isVaseMode,
-        updatePageSettings,
-    } = usePageContext();
-    const { type, iterations, rows, cols, updateGenerationSettings } =
-        useGenerationContext();
+type Props = { binRefs: MutableRefObject<RefObject<Mesh>[]> };
+
+type Slider = {
+    label: string;
+    key: keyof Settings;
+    min: number;
+    max: number;
+    step?: number;
+    mm?: boolean;
+};
+
+const boxSliders: Slider[] = [
+    { label: "Width", key: "width", min: 60, max: 1200, mm: true },
+    { label: "Height", key: "height", min: 35, max: 450, mm: true },
+    { label: "Depth", key: "depth", min: 100, max: 850, mm: true },
+];
+
+const divisionSliders: Slider[] = [
+    { label: "Width Division", key: "divideWidth", min: 0.1, max: 0.9, step: 0.01 },
+    { label: "Depth Division", key: "divideDepth", min: 0.1, max: 0.9, step: 0.01 },
+];
+
+const gapSliders: Slider[] = [
+    { label: "Outer Gap", key: "outerGap", min: 0, max: 20, step: 0.1, mm: true },
+    { label: "Inner Gap", key: "innerGap", min: 0, max: 20, step: 0.1, mm: true },
+];
+
+const generationSliders: Record<GenerationType, Slider[]> = {
+    Recursive: [{ label: "Iterations", key: "iterations", min: 0, max: 3 }],
+    Grid: [
+        { label: "Rows", key: "rows", min: 1, max: 10 },
+        { label: "Columns", key: "cols", min: 1, max: 10 },
+    ],
+};
+
+const checkboxes: { label: string; key: keyof Settings }[] = [
+    { label: "Show measurements", key: "areMeasurementsEnabled" },
+    { label: "Show index numbers", key: "areIndexNumbersEnabled" },
+    { label: "Export as 'Vase Mode' object", key: "isVaseMode" },
+];
+
+export const ConfigPanel = ({ binRefs }: Props) => {
+    const settings = useSettings();
+    const { type, bedSizeX, bedSizeY, update } = settings;
     const [isExporting, setIsExporting] = useState(false);
 
     const exportBins = async () => {
         setIsExporting(true);
 
         try {
-            await exportMeshesToObj(binMeshArray);
+            await exportMeshesToObj(binRefs.current.map((ref) => ref.current!));
         } catch (err) {
             console.log("Error exporting bins");
             console.log(err);
@@ -61,414 +64,164 @@ export const ConfigPanel = ({ binMeshArray }: Props) => {
         }
     };
 
-    const size = "lg";
-
-    const boxSettingsSliders = [
-        {
-            label: "Width",
-            value: width,
-            maxValue: 1200,
-            minValue: 60,
-            rawValue: false,
-            inputValue: useState(width),
-            updateFunc: updateBoxSettings,
-        },
-        {
-            label: "Height",
-            value: height,
-            maxValue: 450,
-            minValue: 35,
-            rawValue: false,
-            inputValue: useState(height),
-            updateFunc: updateBoxSettings,
-        },
-        {
-            label: "Depth",
-            value: depth,
-            maxValue: 850,
-            minValue: 100,
-            rawValue: false,
-            inputValue: useState(depth),
-            updateFunc: updateBoxSettings,
-        },
+    const binSliders: Slider[] = [
+        { label: "Radius", key: "radius", min: 5, max: 150, mm: true },
+        { label: "Thickness", key: "thickness", min: 2, max: 20, mm: true },
+        ...(type === "Recursive" ? divisionSliders : []),
+        ...gapSliders,
     ];
 
-    const binSettingsSliders = [
-        {
-            label: "Radius",
-            value: radius,
-            maxValue: 150,
-            minValue: 5,
-            rawValue: false,
-            inputValue: useState(radius),
-            updateFunc: updateBinSettings,
-        },
-        {
-            label: "Thickness",
-            value: thickness,
-            maxValue: 20,
-            minValue: 2,
-            rawValue: false,
-            inputValue: useState(thickness),
-            updateFunc: updateBinSettings,
-        },
-        {
-            label: "Width Division",
-            variableName: "divideWidth",
-            value: divideWidth,
-            maxValue: 0.9,
-            minValue: 0.1,
-            rawValue: true,
-            step: 0.01,
-            inputValue: useState(divideWidth),
-            updateFunc: updateBinSettings,
-            hidden: type === "Grid",
-        },
-        {
-            label: "Depth Division",
-            variableName: "divideDepth",
-            value: divideDepth,
-            maxValue: 0.9,
-            minValue: 0.1,
-            rawValue: true,
-            step: 0.01,
-            inputValue: useState(divideDepth),
-            updateFunc: updateBinSettings,
-            hidden: type === "Grid",
-        },
-        {
-            label: "Outer Gap",
-            variableName: "outerGap",
-            value: outerGap,
-            maxValue: 20,
-            minValue: 0,
-            step: 0.1,
-            inputValue: useState(outerGap),
-            updateFunc: updateBinSettings,
-        },
-        {
-            label: "Inner Gap",
-            variableName: "innerGap",
-            value: innerGap,
-            maxValue: 20,
-            minValue: 0,
-            step: 0.1,
-            inputValue: useState(innerGap),
-            updateFunc: updateBinSettings,
-        },
-    ];
-
-    const generationSlidersRecursive = [
-        {
-            label: "Iterations",
-            value: iterations,
-            maxValue: 3,
-            minValue: 0,
-            rawValue: true,
-            step: 1,
-            inputValue: useState(iterations),
-            updateFunc: updateGenerationSettings,
-        },
-    ];
-
-    const generationSlidersGrid = [
-        {
-            label: "Rows",
-            value: rows,
-            maxValue: 10,
-            minValue: 1,
-            rawValue: true,
-            step: 1,
-            inputValue: useState(rows),
-            updateFunc: updateGenerationSettings,
-        },
-        {
-            label: "Columns",
-            variableName: "cols",
-            value: cols,
-            maxValue: 10,
-            minValue: 1,
-            rawValue: true,
-            step: 1,
-            inputValue: useState(cols),
-            updateFunc: updateGenerationSettings,
-        },
-    ];
-
-    const generationSliders =
-        type === "Recursive"
-            ? generationSlidersRecursive
-            : generationSlidersGrid;
-
-    const checkboxes = [
-        {
-            label: "Show measurements",
-            variableName: "areMeasurementsEnabled",
-            value: areMeasurementsEnabled,
-            updateFunc: updatePageSettings,
-        },
-        {
-            label: "Show index numbers",
-            variableName: "areIndexNumbersEnabled",
-            value: areIndexNumbersEnabled,
-            updateFunc: updatePageSettings,
-        },
-        {
-            label: "Export as 'Vase Mode' object",
-            variableName: "isVaseMode",
-            value: isVaseMode,
-            updateFunc: updatePageSettings,
-        },
-    ];
-
-    const sliderComponent = (sliderSettings: any) => {
-        if (!sliderSettings.inputValue) return;
-
-        const [inputValue, setInputVaue] = sliderSettings.inputValue;
+    const sliderComponent = ({ label, key, min, max, step = 1, mm }: Slider) => {
+        const value = settings[key] as number;
+        const percent = ((value - min) / (max - min)) * 100;
 
         return (
-            <Slider
-                key={sliderSettings.label}
-                label={sliderSettings.label}
-                size={size}
-                step={sliderSettings.step || 1}
-                maxValue={sliderSettings.maxValue}
-                minValue={sliderSettings.minValue}
-                aria-label={sliderSettings.label}
-                value={sliderSettings.value}
-                className="max-w-md"
-                classNames={{
-                    filler: "bg-white",
-                    track: "rounded bg-black cursor-ew-resize",
-                    labelWrapper:
-                        "relative top-5 h-0 px-2 z-50 mix-blend-difference",
-                    value: "text-md",
-                    label: "text-md pointer-events-none",
-                }}
-                hideThumb={true}
-                onChange={(value: SliderValue) => {
-                    setInputVaue(value);
-                    sliderSettings.updateFunc({
-                        [sliderSettings.variableName ||
-                        sliderSettings.label.toLowerCase()]: value,
-                    });
-                }}
-                getValue={(value: SliderValue) =>
-                    sliderSettings.rawValue
-                        ? value.toString()
-                        : `${value as number}mm`
-                }
-                renderValue={({ children, ...props }) => (
-                    <output {...props}>
+            <div key={key} className="flex flex-col gap-1">
+                <div className="flex justify-between font-mono text-xs uppercase tracking-wide text-neutral-500">
+                    <span>{label}</span>
+                    <span>
                         <input
-                            className="w-12 text-right text-md text-white font-medium bg-transparent outline-none transition-colors border-transparent"
+                            key={value}
+                            className="w-12 text-right text-white bg-transparent outline-none focus-visible:underline"
                             type="text"
-                            value={inputValue}
-                            onChange={(
-                                e: React.ChangeEvent<HTMLInputElement>
-                            ) => {
-                                const v = e.target.value;
-                                setInputVaue(v);
-                            }}
-                            onKeyDown={(
-                                e: React.KeyboardEvent<HTMLInputElement>
-                            ) => {
-                                const isEnterKey = e.key === "Enter";
-                                const isNumber = !isNaN(Number(inputValue));
+                            aria-label={`${label} value`}
+                            defaultValue={value}
+                            onKeyDown={(e) => {
+                                const typed = Number(e.currentTarget.value);
+                                if (e.key !== "Enter" || isNaN(typed)) return;
 
-                                if (isEnterKey && isNumber) {
-                                    const finalValue = !inputValue
-                                        ? sliderSettings.minValue
-                                        : inputValue < sliderSettings.minValue
-                                        ? sliderSettings.minValue
-                                        : inputValue > sliderSettings.maxValue
-                                        ? sliderSettings.maxValue
-                                        : inputValue;
-                                    setInputVaue(finalValue);
-                                    sliderSettings.updateFunc({
-                                        [sliderSettings.variableName ||
-                                        sliderSettings.label.toLowerCase()]:
-                                            Number(finalValue),
-                                    });
-                                }
+                                const clamped = Math.min(max, Math.max(min, typed));
+                                e.currentTarget.value = String(clamped);
+                                update({ [key]: clamped });
                             }}
                         />
-                        {!sliderSettings.rawValue && "mm"}
-                    </output>
-                )}
-            />
+                        {mm && "mm"}
+                    </span>
+                </div>
+                <div className="relative h-6 bg-tile-2 has-[:focus-visible]:outline has-[:focus-visible]:outline-1 has-[:focus-visible]:outline-white">
+                    <div
+                        className="absolute inset-y-0 left-0 bg-invert"
+                        style={{ width: `${percent}%` }}
+                    />
+                    <input
+                        type="range"
+                        aria-label={label}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize"
+                        step={step}
+                        min={min}
+                        max={max}
+                        value={value}
+                        onChange={(e) => update({ [key]: Number(e.target.value) })}
+                    />
+                </div>
+            </div>
         );
     };
 
+    const section = (title: string, children: ReactNode, open = false) => (
+        <details open={open} className="group border-b border-neutral-900">
+            <summary className="flex justify-between py-3 cursor-pointer list-none font-mono text-xs uppercase tracking-wide text-neutral-500 hover:text-white focus-visible:text-white outline-none group-open:text-white">
+                {title}
+                <span aria-hidden className="group-open:hidden">+</span>
+                <span aria-hidden className="hidden group-open:inline">-</span>
+            </summary>
+            <div className="flex flex-col gap-4 pb-5">{children}</div>
+        </details>
+    );
+
+    const monoLabel = "font-mono text-xs uppercase tracking-wide text-neutral-500";
+    const field =
+        "h-9 px-2 bg-tile-2 border border-neutral-800 text-white font-mono text-sm outline-none focus-visible:border-white";
+
     return (
-        <div className="dark max-h-64 md:max-h-full md:h-screen overflow-auto flex flex-col py-4 px-5 border-l-1 border-t-1 sm:border-t-0 border-neutral-800 antialiased bg-neutral-950 gap-2">
-            <div className="flex justify-between items-center">
-                <h1 className="text-xl font-bold tracking-wide">
-                    Configuration
-                </h1>
-            </div>
-            <Accordion
-                selectionMode="multiple"
-                defaultExpandedKeys={["1", "2", "3"]}
-            >
-                <AccordionItem
-                    key="1"
-                    title="Box Settings"
-                    classNames={{ title: "!text-white font-bold" }}
-                >
-                    <div className="flex flex-col gap-2">
-                        {boxSettingsSliders.map((slider) => {
-                            return sliderComponent(slider);
-                        })}
-                    </div>
-                </AccordionItem>
-                <AccordionItem
-                    key="2"
-                    title="Bin Settings"
-                    classNames={{ title: "!text-white font-bold" }}
-                >
-                    <div className="flex flex-col gap-2">
-                        {binSettingsSliders.filter((slider) => !slider.hidden).map((slider) => {
-                            return sliderComponent(slider);
-                        })}
-                    </div>
-                </AccordionItem>
-                <AccordionItem
-                    key="3"
-                    title="Generation Settings"
-                    classNames={{ title: "!text-white font-bold" }}
-                >
-                    <div className="flex flex-col gap-2">
-                        <span>Generation Type</span>
-                        <Select
-                            label="Generation Type"
-                            labelPlacement="outside-left"
-                            placeholder="Select a generation type"
-                            defaultSelectedKeys={[type]}
-                            classNames={{ label: "hidden" }}
-                            size="sm"
-                            radius="sm"
-                            variant="faded"
-                            onChange={(
-                                event: React.ChangeEvent<HTMLSelectElement>
-                            ) => {
-                                updateGenerationSettings({
+        <div className="max-h-64 md:max-h-full overflow-auto flex flex-col pb-4 px-5 border-l border-t sm:border-t-0 border-neutral-800">
+            {section(
+                "Box Settings",
+                boxSliders.map(sliderComponent),
+                true
+            )}
+            {section(
+                "Bin Settings",
+                binSliders.map(sliderComponent),
+                true
+            )}
+            {section(
+                "Generation Settings",
+                <>
+                    <label className="flex flex-col gap-1">
+                        <span className={monoLabel}>Generation Type</span>
+                        <select
+                            className={`${field} uppercase`}
+                            value={type}
+                            onChange={(event) =>
+                                update({
                                     type: event.target.value as GenerationType,
-                                });
-                            }}
+                                })
+                            }
                         >
                             {GENERATION_TYPES.map((type) => (
-                                <SelectItem key={type} value={type}>
+                                <option key={type} value={type}>
                                     {type}
-                                </SelectItem>
+                                </option>
                             ))}
-                        </Select>
-                        {generationSliders.map((slider) => {
-                            return sliderComponent(slider);
-                        })}
+                        </select>
+                    </label>
+                    {generationSliders[type].map(sliderComponent)}
+                </>,
+                true
+            )}
+            {section(
+                "Printer Settings",
+                <div className="flex flex-col gap-1">
+                    <span className={monoLabel}>Printer Bed Size (X, Y) / mm</span>
+                    <div className="flex gap-3 items-center">
+                        <input
+                            type="number"
+                            aria-label="Bed size X"
+                            className={`${field} w-full`}
+                            value={bedSizeX.toString()}
+                            onChange={(e) =>
+                                update({ bedSizeX: +e.target.value })
+                            }
+                        />
+                        <span className={monoLabel}>X</span>
+                        <input
+                            type="number"
+                            aria-label="Bed size Y"
+                            className={`${field} w-full`}
+                            value={bedSizeY.toString()}
+                            onChange={(e) =>
+                                update({ bedSizeY: +e.target.value })
+                            }
+                        />
                     </div>
-                </AccordionItem>
-                <AccordionItem
-                    key="4"
-                    title="Printer Settings"
-                    classNames={{ title: "!text-white font-bold" }}
-                >
-                    <div className="w-full flex flex-col gap-2">
-                        <span>Printer Bed Size (X, Y)</span>
-                        <div className="flex gap-3 items-center">
-                            <Input
-                                type="number"
-                                radius="sm"
-                                endContent={
-                                    <span className="font-bold text-white">
-                                        mm
-                                    </span>
-                                }
-                                classNames={{
-                                    inputWrapper: "h-10",
-                                    input: "font-bold",
-                                }}
-                                value={bedSizeX.toString()}
-                                onValueChange={(value) =>
-                                    updatePrinterSettings({ bedSizeX: +value })
-                                }
-                            />
-                            <span>X</span>
-                            <Input
-                                type="number"
-                                radius="sm"
-                                endContent={
-                                    <span className="font-bold">
-                                        mm
-                                    </span>
-                                }
-                                classNames={{
-                                    inputWrapper: "h-10",
-                                    input: "font-bold",
-                                }}
-                                value={bedSizeY.toString()}
-                                onValueChange={(value) =>
-                                    updatePrinterSettings({ bedSizeY: +value })
-                                }
-                            />
-                        </div>
-                    </div>
-                </AccordionItem>
-                <AccordionItem
-                    key="5"
-                    title="Page Settings"
-                    classNames={{ title: "!text-white font-bold" }}
-                >
-                    <div className="flex flex-col gap-2">
-                        {checkboxes.map((checkbox, index) => {
-                            return (
-                                <Checkbox
-                                    key={index}
-                                    isSelected={checkbox.value}
-                                    onValueChange={(isSelected: boolean) =>
-                                        checkbox.updateFunc({
-                                            [checkbox.variableName]: isSelected,
-                                        })
-                                    }
-                                    classNames={{
-                                        label: "text-white",
-                                    }}
-                                >
-                                    {checkbox.label}
-                                </Checkbox>
-                            );
-                        })}
-                    </div>
-                </AccordionItem>
-            </Accordion>
-
-            <div className="flex flex-col grow justify-end gap-4">
-                <Button
-                    radius="sm"
-                    size="lg"
-                    className="w-full"
-                    isLoading={isExporting}
-                    onPress={exportBins}
-                >
-                    <span className="font-bold">Export Bins</span>
-                </Button>
-                <div className="text-neutral-500 font-bold flex flex-col">
-                    <span>
-                        Made by
-                        <Link isBlock href="https://git.akif.kr">
-                            Akif
-                        </Link>
-                    </span>
-                    <span>
-                        Inspired by
-                        <Link
-                            isBlock
-                            href="https://nodedojo.gumroad.com/l/dojobin?layout=profile"
-                        >
-                            Node Dojo
-                        </Link>
-                    </span>
                 </div>
+            )}
+            {section(
+                "Page Settings",
+                checkboxes.map((checkbox) => (
+                    <label key={checkbox.key} className="flex gap-3 items-center cursor-pointer">
+                        <input
+                            type="checkbox"
+                            className="appearance-none size-4 border border-neutral-600 checked:bg-invert checked:border-invert outline-none focus-visible:border-white cursor-pointer"
+                            checked={settings[checkbox.key] as boolean}
+                            onChange={(e) =>
+                                update({ [checkbox.key]: e.target.checked })
+                            }
+                        />
+                        {checkbox.label}
+                    </label>
+                ))
+            )}
+
+            <div className="flex flex-col grow justify-end pt-5">
+                <button
+                    className="h-12 w-full bg-tile-2 border border-neutral-800 font-mono text-sm uppercase tracking-wide text-white hover:bg-invert hover:text-black focus-visible:bg-invert focus-visible:text-black outline-none disabled:opacity-55"
+                    disabled={isExporting}
+                    onClick={exportBins}
+                >
+                    {isExporting ? "Exporting..." : "Export Bins"}
+                </button>
             </div>
         </div>
     );
