@@ -1,4 +1,4 @@
-export const DEFAULT_VALUES: ConfigurationValues = {
+export const DEFAULT_SETTINGS: Settings = {
     width: 320,
     height: 130,
     depth: 560,
@@ -10,19 +10,13 @@ export const DEFAULT_VALUES: ConfigurationValues = {
     innerGap: 2.5,
     bedSizeX: 220,
     bedSizeY: 220,
-};
-
-export const DEFAULT_GENERATION_VALUES: GenerationSettings = {
     type: "Recursive",
     iterations: 1,
     rows: 2,
     cols: 2,
-}
-
-export const GENERATION_TYPES = ["Recursive", "Grid"]
-
-export const DEFAULT_PAGE_SETTINGS: PageSettings = {
     areMeasurementsEnabled: true,
     areIndexNumbersEnabled: true,
     isVaseMode: false,
 };
+
+export const GENERATION_TYPES = ["Recursive", "Grid"];

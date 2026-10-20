@@ -1,1 +1,0 @@
-export { ThreeApp } from "./ThreeApp";

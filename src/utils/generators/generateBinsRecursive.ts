@@ -4,7 +4,7 @@ type Props = {
     height: number;
     divideWidth: number;
     divideDepth: number;
-    iterations?: number;
+    iterations: number;
     radius: number;
     thickness: number;
     innerGap: number;
@@ -23,13 +23,9 @@ export const generateBinsRecursive = (props: Props): Bin[] => {
         innerGap,
     } = props;
 
-    const bins: Bin[] = [];
+    if (iterations === 0) return [];
+
     const halfInnerGap = innerGap / 2;
-    let actualIterations = iterations ?? 1;
-
-    // If no iterations, return empty array
-    if (actualIterations === 0) return bins;
-
     const initialBins: Bin[] = [
         // Top left
         {
@@ -41,7 +37,6 @@ export const generateBinsRecursive = (props: Props): Bin[] => {
             z: 0,
             radius,
             thickness,
-            shouldRender: actualIterations === 1,
         },
         // Top right
         {
@@ -53,7 +48,6 @@ export const generateBinsRecursive = (props: Props): Bin[] => {
             z: 0,
             radius,
             thickness,
-            shouldRender: actualIterations === 1,
         },
         // Bottom left
         {
@@ -65,7 +59,6 @@ export const generateBinsRecursive = (props: Props): Bin[] => {
             z: depth * (1 - divideDepth) + halfInnerGap,
             radius,
             thickness,
-            shouldRender: actualIterations === 1,
         },
         // Bottom right
         {
@@ -77,45 +70,26 @@ export const generateBinsRecursive = (props: Props): Bin[] => {
             z: depth * (1 - divideDepth) + halfInnerGap,
             radius,
             thickness,
-            shouldRender: actualIterations === 1,
         },
     ];
 
-    // Push initial bins
-    bins.push(...initialBins);
+    if (iterations === 1) return initialBins;
 
-    if (actualIterations > 1) {
-        // For each initial bin, generate 4 more bins recursively
-        initialBins.forEach((initialBin, index) => {
-            // Flip divideWidth and divideDepth for every second bin
-            const flippedDivideWidth =
-                index % 2 === 0 ? divideDepth : divideWidth;
-            const flippedDivideDepth =
-                index % 2 === 0 ? divideWidth : divideDepth;
-
-            const values: Props = {
-                width: initialBin.width,
-                depth: initialBin.depth,
-                height: initialBin.height,
-                divideWidth: flippedDivideWidth,
-                divideDepth: flippedDivideDepth,
-                iterations: actualIterations - 1,
-                radius,
-                thickness,
-                innerGap
-            }
-
-            const subBins = generateBinsRecursive(values);
-            bins.push(
-                ...subBins.map((bin) => ({
-                    ...bin,
-                    x: initialBin.x + bin.x,
-                    y: initialBin.y + bin.y,
-                    z: initialBin.z + bin.z,
-                }))
-            );
+    // Split each initial bin into 4 more, flipping the divisions for every second bin
+    return initialBins.flatMap((initialBin, index) => {
+        const flip = index % 2 === 0;
+        const subBins = generateBinsRecursive({
+            ...props,
+            width: initialBin.width,
+            depth: initialBin.depth,
+            divideWidth: flip ? divideDepth : divideWidth,
+            divideDepth: flip ? divideWidth : divideDepth,
+            iterations: iterations - 1,
         });
-    }
-
-    return bins.filter((bin) => bin.shouldRender);
+        return subBins.map((bin) => ({
+            ...bin,
+            x: initialBin.x + bin.x,
+            z: initialBin.z + bin.z,
+        }));
+    });
 };

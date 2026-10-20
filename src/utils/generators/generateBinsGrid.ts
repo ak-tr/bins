@@ -2,10 +2,8 @@ type Props = {
     width: number;
     depth: number;
     height: number;
-    divideWidth: number;
-    divideDepth: number;
-    rows?: number;
-    cols?: number;
+    rows: number;
+    cols: number;
     radius: number;
     thickness: number;
     innerGap: number;
@@ -16,8 +14,8 @@ export const generateBinsGrid = (props: Props): Bin[] => {
         width,
         depth,
         height,
-        rows = 2, // Default number of rows
-        cols = 2, // Default number of columns
+        rows,
+        cols,
         radius,
         thickness,
         innerGap,
@@ -49,7 +47,6 @@ export const generateBinsGrid = (props: Props): Bin[] => {
                 z: zPos,
                 radius,
                 thickness,
-                shouldRender: true,
             };
 
             bins.push(bin);
