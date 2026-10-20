@@ -11,7 +11,7 @@ export const RoundedEdgedRectGeometry = (
     // Define the shape of the rounded edged rectangle
     const halfWidth = width / 2;
     const halfHeight = height / 2;
-    const cornerRadius = Math.min(radius, Math.min(halfWidth, halfHeight));
+    const cornerRadius = Math.min(radius, halfWidth, halfHeight);
 
     shape.moveTo(-halfWidth + cornerRadius, -halfHeight);
     shape.lineTo(halfWidth - cornerRadius, -halfHeight);

@@ -1,16 +1,12 @@
 import JSZip from "jszip";
-import { saveAs } from "file-saver";
 import { OBJExporter } from "three/examples/jsm/exporters/OBJExporter.js";
 import { Mesh } from "three";
-import { MutableRefObject } from "react";
 
-export const exportMeshesToObj = async (
-    binMeshArray: MutableRefObject<Mesh[]>
-) => {
+export const exportMeshesToObj = async (binMeshes: Mesh[]) => {
     const timestamp = new Date().getTime();
     const zip = new JSZip();
 
-    binMeshArray.current.forEach((binMesh, index) => {
+    binMeshes.forEach((binMesh, index) => {
         const exporter = new OBJExporter();
 
         const newMesh = new Mesh(binMesh.geometry);
@@ -26,5 +22,9 @@ export const exportMeshesToObj = async (
     });
 
     const content = await zip.generateAsync({ type: "blob" });
-    saveAs(content, `bins_${timestamp}.zip`);
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(content);
+    link.download = `bins_${timestamp}.zip`;
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(link.href));
 };

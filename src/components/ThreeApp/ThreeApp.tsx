@@ -1,104 +1,45 @@
 // Three imports
 import { Canvas } from "@react-three/fiber";
 import { PerspectiveCamera, PresentationControls } from "@react-three/drei";
+import { Mesh } from "three";
 
 // Utilities
-import { generateBinsRecursive } from "@utils/generators/generateBinsRecursive";
-import { generateBinsGrid } from "@utils/generators/generateBinsGrid";
+import { generateBins } from "../../utils/generators/generateBins";
 
 // Components
-import { Drawer } from "@components/Objects/Drawer";
-import { Measurements } from "@components/Objects/Measurements";
-import { Bin } from "@components/Objects/Bin";
+import { Drawer } from "../Objects/Drawer/Drawer";
+import { Measurements } from "../Objects/Measurements/Measurements";
+import { Bin } from "../Objects/Bin/Bin";
 
 // React imports
-import { createRef, useEffect, useMemo, useRef, useState } from "react";
-import { useDrawerContext } from "context/DrawerSettingsContext";
-import { useBinContext } from "context/BinSettingsContext";
-import { usePrinterContext } from "context/PrinterSettingsContext";
-import { usePageContext } from "context/PageSettingsContext";
-import { useGenerationContext } from "context/GenerationSettingsContext";
+import { MutableRefObject, RefObject, createRef, useMemo } from "react";
+import { useSettings } from "../../context/SettingsContext";
 
-type Props = {
-    updateBinMeshArray: (refs: any[]) => void;
-};
+type Props = { binRefs: MutableRefObject<RefObject<Mesh>[]> };
 
-export const ThreeApp = ({ updateBinMeshArray }: Props) => {
-    const { width, height, depth } = useDrawerContext();
-    const { radius, thickness, divideWidth, divideDepth, outerGap, innerGap } =
-        useBinContext();
-    const { type, iterations, rows, cols } = useGenerationContext();
-    const { bedSizeX, bedSizeY } = usePrinterContext();
-    const { areMeasurementsEnabled, isVaseMode } = usePageContext();
+export const ThreeApp = ({ binRefs }: Props) => {
+    const settings = useSettings();
+    const { width, height, depth, outerGap, areMeasurementsEnabled } = settings;
 
-    const binRefs = useRef([]);
+    const bins = generateBins(settings);
+    binRefs.current = bins.map(
+        (_, index) => binRefs.current[index] ?? createRef()
+    );
 
-    const groupedBins = useMemo(() => {
-        let props: BaseBinValues = {
-            width: width - outerGap * 2,
-            depth: depth - outerGap * 2,
-            height,
-            divideWidth,
-            divideDepth,
-            radius,
-            thickness,
-            innerGap,
-        };
-
-        if (type === "Recursive") {
-            props.iterations = iterations;
-        } else {
-            props.rows = rows;
-            props.cols = cols;
-        }
-
-        const bins =
-            type === "Recursive"
-                ? generateBinsRecursive(props)
-                : generateBinsGrid(props);
-
-        binRefs.current = bins.map(
-            (_, index) => binRefs.current[index] ?? createRef()
-        );
-
-        const binObjects = bins.map((bin, index) => {
-            // Position in group to avoid position via the centre of the bin
-            return (
-                <group key={index} position={[bin.x, bin.y, bin.z]}>
-                    <Bin
-                        ref={binRefs.current[index]}
-                        width={bin.width}
-                        height={bin.height}
-                        depth={bin.depth}
-                        radius={bin.radius}
-                        thickness={bin.thickness}
-                        bedSizeX={bedSizeX}
-                        bedSizeY={bedSizeY}
-                        isVaseMode={isVaseMode}
-                        index={index}
-                    />
-                </group>
-            );
-        });
-
-        return binObjects;
-    }, [
-        width,
-        height,
-        depth,
-        radius,
-        thickness,
-        divideWidth,
-        divideDepth,
-        outerGap,
-        innerGap,
-        iterations,
-        bedSizeX,
-        bedSizeY,
-        type,
-        rows,
-        cols,
-    ]);
+    const groupedBins = bins.map((bin, index) => (
+        // Position in group to avoid position via the centre of the bin
+        <group key={index} position={[bin.x, bin.y, bin.z]}>
+            <Bin
+                ref={binRefs.current[index]}
+                width={bin.width}
+                height={bin.height}
+                depth={bin.depth}
+                radius={bin.radius}
+                thickness={bin.thickness}
+                index={index}
+            />
+        </group>
+    ));
 
     const allBins = (
         <group position={[-width / 2 + outerGap, 0, -depth / 2 + outerGap]}>
@@ -106,18 +47,9 @@ export const ThreeApp = ({ updateBinMeshArray }: Props) => {
         </group>
     );
 
+    // Dynamically change distance depending on how large the box is
     const objectVolume = width * height * depth;
-
-    updateBinMeshArray(binRefs.current);
-
-    const [distance, setDistance] = useState(1000);
-
-    useEffect(() => {
-        // Dynamically change distance depending on how large the box is
-        const normalise = (val: number, max: number, min: number) =>
-            (val - min) / (max - min);
-        setDistance(1000 + 1000 * normalise(objectVolume, 459000000, 687500));
-    }, [objectVolume]);
+    const distance = 1000 + (1000 * (objectVolume - 687500)) / (459000000 - 687500);
 
     const drawer = useMemo(
         () => Drawer({ width, height, depth }),
@@ -143,15 +75,10 @@ export const ThreeApp = ({ updateBinMeshArray }: Props) => {
                 color="white"
             />
             <PresentationControls
-                enabled={true} // the controls can be disabled by setting this to false
-                global={false} // Spin globally or by dragging the model
-                cursor={true} // Whether to toggle cursor style on drag
-                snap={false} // Snap-back to center (can also be a spring config)
-                speed={0.9} // Speed factor
+                speed={0.9}
                 zoom={0.75} // Zoom factor when half the polar-max is reached
                 rotation={[0.8, 0.3, 0]} // Default rotation
                 polar={[-0.4, Math.PI / 2]} // Vertical limits
-                azimuth={[-Infinity, Infinity]} // Horizontal limits
                 config={{ mass: 0.5, tension: 120, friction: 10 }} // Spring config
             >
                 {...objects}
