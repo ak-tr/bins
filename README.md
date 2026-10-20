@@ -10,7 +10,7 @@ Live demo available at [bins.akif.kr](https://bins.akif.kr).
 
 ## Usage
 
-Currently there are 10 adjustable parameters that affect the generation of the bins. All values are in mm unless specified otherwise.
+Currently there are 10 adjustable parameters that affect the generation of the bins. All values are in mm unless specified otherwise. Your settings are saved in your browser, so they are still there when you come back.
 
 Red bins indicate bins that cannot be printed according to the X and Y dimensions of the print bed provided under "Printer Settings", either way round. Blue bins indicate bins that can be printed. This does not take into account the Z ability of your printer.
 
