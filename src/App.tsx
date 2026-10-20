@@ -17,10 +17,7 @@ function App() {
     return (
         <div className="flex flex-col h-lvh font-mono text-xs uppercase tracking-wide text-neutral-500">
             <header className="flex items-center justify-between gap-4 px-4 sm:px-6 h-12 shrink-0 border-b border-neutral-800">
-                <h1 className="flex items-center gap-3 text-white">
-                    <img src="/icon.svg" alt="" className="size-5" />
-                    Bins
-                </h1>
+                <h1 className="text-white">Bins</h1>
                 <span>Procedural bin generator</span>
             </header>
             <main className="grid grid-rows-[1fr_auto] md:grid-rows-1 md:grid-cols-[minmax(0,_1fr)_400px] flex-1 min-h-0 normal-case tracking-normal text-base text-neutral-200 font-sans">
@@ -35,8 +32,9 @@ function App() {
                 </SettingsProvider>
             </main>
             <footer className="flex justify-between gap-4 px-4 sm:px-6 py-3 shrink-0 border-t border-neutral-800">
-                <span>
-                    Made by{" "}
+                <span className="flex items-center gap-2">
+                    <img src="/icon.svg" alt="" className="size-4" />
+                    Made by
                     <a className={link} href="https://git.akif.kr">
                         Akif
                     </a>
