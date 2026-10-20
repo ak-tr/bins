@@ -12,7 +12,11 @@ Live demo available at [bins.akif.kr](https://bins.akif.kr).
 
 Currently there are 10 adjustable parameters that affect the generation of the bins. All values are in mm unless specified otherwise.
 
-Red bins indicate bins that cannot be printed according to the X and Y dimensions of the print bed provided under "Printer Settings". Blue bins indicate bins that can be printed. This does not take into account the Z ability of your printer.
+Red bins indicate bins that cannot be printed according to the X and Y dimensions of the print bed provided under "Printer Settings", either way round. Blue bins indicate bins that can be printed. This does not take into account the Z ability of your printer.
+
+### Print Beds
+
+The print beds panel (left of the 3D view, above it on smaller screens) shows a top down view of how the bins could be laid out on your print bed. Bins are packed onto as few beds as possible, rotated where that helps, with a 5mm gap between them. Bins that are too big for the bed are listed underneath. Numbers match the index numbers on the generator.
 
 ### Box Settings
 
@@ -59,6 +63,10 @@ Recursive             |  Grid
 These settings are quite self explanatory. They are there for disabling certain elements on the page.
 There is also a checkbox that you can enable which will export the bins as non hollow objects. This allows you to print them in vase mode if you would like that option. Refer to "[Printing bins in vase mode](#printing-bins-in-vase-mode)".
 
+### Printer Settings
+
+- Printer Bed Size - X and Y size of your print bed, used for the colours and the print beds panel.
+
 ## Printing
 
 After clicking "Export Bins", a `.zip` file will be downloaded onto your device. This zip file will contain each bin that you have generated.
@@ -94,20 +102,21 @@ Your slicer might show or warn you about open edges, these should be automatical
 - Generated .obj files have a large amount of open edges as warned by PrusaSlicer. Tested with Cura and PrusaSlicer and this doesn't affect its printability but can be quite annoying.
 - Cannot generate .stl files at all, they are very buggy using `STLExporter`. Currently not implemented, may look into it in the future. Currently .obj files work well enough to make this project work.
 
-## Roadmap
-
-- Add printer bed with layer visualisation like the implementation by [Node Dojo](https://github.com/node-dojo/dojo-recursive-bins/).
-- Add a different way to visualise the generated bins, maybe like a carousel(?), top down view or something of that sort.
-
 ## Stack
 
 - [Vite](https://vitejs.dev/) with [`react-ts`](https://vite.new/react-ts)
 - [Tailwind CSS](https://tailwindcss.com/)
-- [Next UI](https://nextui.org/docs/guide/introduction)
+- [Mosaic](https://github.com/ak-tr/mosaic) design system
 - [`@react-three/fiber`](https://github.com/pmndrs/react-three-fiber/tree/master)
 - [`@react-three/drei`](https://github.com/pmndrs/drei)
-- [`@react-three/csg`](https://github.com/pmndrs/react-three-csg)
 - [`three-bvh-csg`](https://github.com/gkjohnson/three-bvh-csg)
+
+## Development
+
+```bash
+pnpm install
+pnpm dev
+```
 
 ## Notes
 
